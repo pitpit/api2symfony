@@ -22,6 +22,13 @@ class SymfonyResponse
     private $headers;
 
     /**
+     * Description
+     *
+     * @var string
+     */
+    private $description;
+
+    /**
      * Contents
      *
      * @var array
@@ -34,10 +41,11 @@ class SymfonyResponse
      * @param integer   $code           HTTP Code
      * @param array header
      */
-    public function __construct($code, array $headers = array())
+    public function __construct($code, array $headers = array(), $description = null)
     {
         $this->code         = $code;
         $this->headers      = $headers;
+        $this->description  = $description;
     }
 
     /**
@@ -81,5 +89,15 @@ class SymfonyResponse
     public function getContents()
     {
         return $this->contents;
+    }
+
+    /**
+     * Gets the Description.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

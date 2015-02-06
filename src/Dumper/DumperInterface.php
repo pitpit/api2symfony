@@ -14,7 +14,7 @@ interface DumperInterface
      *
      * @return boolean
      */
-    function exists(SymfonyController $controller, $destination = '.');
+    public function exists(SymfonyController $controller, $destination = '.');
 
     /**
      * Dump $controller as a file into $destinaton directory
@@ -22,7 +22,7 @@ interface DumperInterface
      * @param  SymfonyController $controller
      * @param  string            $destination
      *
-     * @return string File path dumped
+     * @return array where key is a filename and value the output
      */
-    function dump(SymfonyController $controller, $destination = '.');
+    public function dump(SymfonyController $controller, $destination = '.');
 }

@@ -13,7 +13,7 @@ use Twig_Environment;
  * @author Quentin <q.pautrat@creads.org>
  * @author Damien Pitard <d.pitard@creads.org>
  */
-class SymfonyDumper implements DumperInterface
+class SymfonyDumper extends AbstractFileDumper
 {
     /**
      * Twig
@@ -21,13 +21,6 @@ class SymfonyDumper implements DumperInterface
      * @var Twig_Environment
      */
     protected $twig;
-
-    /**
-     * Filesystem
-     *
-     * @var Filesystem
-     */
-    protected $filesystem;
 
     /**
      * Initialize dumper.
@@ -38,57 +31,19 @@ class SymfonyDumper implements DumperInterface
         $loader = new Twig_Loader_Filesystem(__DIR__ . '/../Resources/templates/symfony');
         $this->twig = new Twig_Environment($loader);
 
-        $this->filesystem = new Filesystem();
-    }
-
-    protected function getFilepath(SymfonyController $controller, $destination)
-    {
-        return $destination . '/' .$controller->getName() . '.php';
+        parent::__construct();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function exists(SymfonyController $controller, $destination = '.')
-    {
-        $filepath = $this->getFilepath($controller, $destination);
-
-        return $this->filesystem->exists($filepath);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function dump(SymfonyController $controller, $destination = '.')
+    protected function render(SymfonyController $controller)
     {
         $template = $this->twig->loadTemplate('controller.php.twig');
-
         if (!$template) {
             throw new \Exception('Unable to find template');
         }
 
-        $output = $template->render(array('controller' => $controller));
-
-        if (!$this->filesystem->exists($destination)) {
-            throw new \InvalidArgumentException(sprintf('Folder %s does not exist', $destination));
-        }
-
-        $filepath = $this->getFilepath($controller, $destination);
-
-        if ($this->filesystem->exists($filepath)) {
-
-            $old = $filepath . '.old';
-            $i = 1;
-            while ($this->filesystem->exists($old)) {
-                $i++;
-                $old = $filepath . '.old~' .$i;
-            }
-
-            $this->filesystem->copy($filepath, $old);
-        }
-
-        $this->filesystem->dumpFile($filepath, $output);
-
-        return $filepath;
+        return $template->render(array('controller' => $controller));
     }
 }
