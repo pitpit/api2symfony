@@ -46,6 +46,7 @@ class SymfonyResponse
         $this->code         = $code;
         $this->headers      = $headers;
         $this->description  = $description;
+        $this->contents  =  array();
     }
 
     /**
