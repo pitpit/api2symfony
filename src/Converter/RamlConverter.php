@@ -81,13 +81,15 @@ class RamlConverter implements ConverterInterface
                             $headers[$key] = isset($value['example']) ? $value['example'] : '';
                         }
                     }
-                    $_response = new SymfonyResponse($code, $headers, $response->getDescription());
+                    // $_response = new SymfonyResponse($code, $headers, $response->getDescription());
                     foreach ($this->config['allowed_response_types'] as $allowedResponsetype) {
                         if (null !== $example = $response->getExampleByType($allowedResponsetype)) {
-                            $_response->addContent(new SymfonyResponseContent($allowedResponsetype, str_replace(array("\r\n", "\n", "\r", "\t", "  "), '', $example)));
+                            $example = str_replace(array("\r\n", "\n", "\r", "\t", "  "), '', $example);
+                            $_response = new SymfonyResponse($code, $example, $allowedResponsetype, $headers, $response->getDescription()?$response->getDescription():$method->getDescription());
+                            $action->addResponse($_response);
+                            // $_response->addContent(new SymfonyResponseContent($allowedResponsetype, str_replace(array("\r\n", "\n", "\r", "\t", "  "), '', $example)));
                         }
                     }
-                    $action->addResponse($_response);
                 }
             }
 

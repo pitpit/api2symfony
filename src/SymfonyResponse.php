@@ -31,9 +31,12 @@ class SymfonyResponse
     /**
      * Contents
      *
-     * @var array
+     * @var string
      */
-    private $contents;
+    private $body;
+
+
+    private $type;
 
     /**
      * Constructor
@@ -41,12 +44,13 @@ class SymfonyResponse
      * @param integer   $code           HTTP Code
      * @param array header
      */
-    public function __construct($code, array $headers = array(), $description = null)
+    public function __construct($code, $body, $type, array $headers = array(), $description = null)
     {
         $this->code         = $code;
         $this->headers      = $headers;
+        $this->body         =  $body;
+        $this->type         =  $type;
         $this->description  = $description;
-        $this->contents  =  array();
     }
 
     /**
@@ -70,26 +74,13 @@ class SymfonyResponse
     }
 
     /**
-     * Add content
-     *
-     * @param SymfonyResponseContent $content
-     * @return  self
-     */
-    public function addContent(SymfonyResponseContent $content)
-    {
-        $this->contents[] = $content;
-
-        return $this;
-    }
-
-    /**
      * Get contents
      *
      * @return array
      */
-    public function getContents()
+    public function getBody()
     {
-        return $this->contents;
+        return $this->body;
     }
 
     /**
@@ -100,5 +91,15 @@ class SymfonyResponse
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Gets the value of type.
+     *
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

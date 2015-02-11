@@ -23,6 +23,11 @@ class SymfonyDumper extends AbstractFileDumper
         return $this->renderClass($controller);
     }
 
+    /**
+     * Render class for controller
+     *
+     * @return string
+     */
     protected function renderClass(SymfonyController $controller)
     {
         $methods = '';
@@ -60,7 +65,11 @@ EOD;
         return $output;
     }
 
-
+    /**
+     * Render class method
+     *
+     * @return string
+     */
     protected function renderMethod(SymfonyAction $action)
     {
         $responses = '';
@@ -83,7 +92,11 @@ EOD;
         return $this->renderIndent($output, 1);
     }
 
-
+    /**
+     * Render method docblock
+     *
+     * @return string
+     */
     protected function renderMethodDocblock(SymfonyAction $action)
     {
         $exceptions = '';
@@ -93,9 +106,9 @@ EOD;
             }
         }
 
-
+        $description = $action->getDescription()?$action->getDescription():'<no description>';
         $output = <<< EOD
-{$action->getDescription()}
+{$description}
 
 @Route("{$action->getRoute()->getPath()}", name="{$action->getRoute()->getName()}")
 @Method({"{$action->getMethod()}"})
@@ -109,61 +122,52 @@ EOD;
         return $output;
     }
 
+    /**
+     * Render an API response
+     *
+     * @return string
+     */
     protected function renderResponse(SymfonyResponse $response)
     {
 
-        if (!count($response->getContents())) {
+        $body = addcslashes($response->getBody(), "'");
+        $description = $response->getDescription()?$response->getDescription():'<no description>';
 
-            $output = <<< EOD
+        if ($response->getCode() >= 200 && $response->getCode() < 300) { //valid response
 
-return new Response(
-    '',
+            if ('application/json' === $response->getType()) {
+                $output = <<< EOD
+
+//{$description}
+return new JsonResponse(
+    '{$body}',
     {$response->getCode()},
 {$this->renderIndent($this->renderArray($response->getHeaders()), 1)}
 );
 EOD;
+            } else {
+                $output = <<< EOD
+
+//{$description}
+return new Response(
+    '{$body}',
+    {$response->getCode()},
+{$this->renderIndent($this->renderArray($response->getHeaders()), 1)}
+);
+EOD;
+            }
+
+            $output = <<< EOD
+if ('{$response->getType()}' == \$request->headers->get('Content-Type')) {
+{$this->renderIndent($output,1)}
+}
+EOD;
+
             $output = $this->renderIndent($output, 1);
-        } else {
-            foreach ($response->getContents() as $content) {
+        } else { //invalid response
+            $output = <<< EOD
 
-                $body = addcslashes($content->getBody(), "'");
-
-                if ($response->getCode() >= 200 && $response->getCode() < 300) { //valid response
-
-                    if ('application/json' === $content->getType()) {
-
-                        $output = <<< EOD
-
-if ('{$content->getType()}' == \$request->headers->get('Content-Type')) {
-
-    return new JsonResponse(
-        '{$body}',
-        {$response->getCode()},
-{$this->renderIndent($this->renderArray($response->getHeaders()), 2)}
-    );
-}
-EOD;
-                    } else {
-
-                        $output = <<< EOD
-
-if ('{$content->getType()}' == \$request->headers->get('Content-Type')) {
-
-    return new Response(
-        '{$body}',
-        {$response->getCode()},
-{$this->renderIndent($this->renderArray($response->getHeaders()), 2)}
-    );
-}
-EOD;
-                    }
-
-                    $output = $this->renderIndent($output, 1);
-                } else { //invalid response
-
-                    $output = <<< EOD
-
-//{$response->getDescription()}
+//{$description}
 throw new HttpException(
     {$response->getCode()},
     '{$body}',
@@ -171,15 +175,18 @@ throw new HttpException(
 {$this->renderIndent($this->renderArray($response->getHeaders()), 1)}
 );
 EOD;
-
-                    $output = $this->renderIndent($this->renderComment($output), 1);
-                }
-            }
+            $output = $this->renderIndent($this->renderComment($output), 1);
         }
+
 
         return $output;
     }
 
+    /**
+     * Render an array
+     *
+     * @return string
+     */
     protected function renderArray($value)
     {
         $output = var_export($value, true);
@@ -187,6 +194,11 @@ EOD;
         return $output;
     }
 
+    /**
+     * Indents code (4 spaces)
+     *
+     * @return string
+     */
     protected function renderIndent($code, $tabs = 0)
     {
         $output = '';
@@ -211,6 +223,11 @@ EOD;
         return $output;
     }
 
+    /**
+     * Comments code in a dockblock way
+     *
+     * @return string
+     */
     protected function renderDocblockComment($code)
     {
         $output = "/**\n";
@@ -223,6 +240,11 @@ EOD;
         return $output;
     }
 
+    /**
+     * Comments code in a simple way
+     *
+     * @return string
+     */
     protected function renderComment($code)
     {
         $output = '';
