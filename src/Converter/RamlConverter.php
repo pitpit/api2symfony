@@ -43,7 +43,7 @@ class RamlConverter implements ConverterInterface
         $this->parser = new Parser();
 
         $this->config = array(
-            'allowed_response_types' => array('application/json'),
+            'allowed_response_types' => array('application/json', 'application/xml'),
             'version_in_namespace' => false
         );
 
