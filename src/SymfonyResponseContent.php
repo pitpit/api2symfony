@@ -19,7 +19,7 @@ class SymfonyResponseContent
      *
      * @var string
      */
-    private $content;
+    private $body;
 
     /**
      * Constructor
@@ -27,10 +27,10 @@ class SymfonyResponseContent
      * @param string $type    Content type
      * @param string $content Content
      */
-    public function __construct($type, $content)
+    public function __construct($type, $body)
     {
         $this->type = $type;
-        $this->content = $content;
+        $this->body = $body;
     }
 
     /**
@@ -46,10 +46,22 @@ class SymfonyResponseContent
     /**
      * Gets content
      *
+     * @deprecated
+     *
      * @return string
      */
     public function getContent()
     {
-        return $this->content;
+        return $this->getBody();
+    }
+
+    /**
+     * Gets body
+     *
+     * @return string
+     */
+    public function getBody()
+    {
+        return $this->body;
     }
 }
