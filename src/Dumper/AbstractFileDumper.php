@@ -4,7 +4,6 @@ namespace Creads\Api2Symfony\Dumper;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Creads\Api2Symfony\SymfonyController;
-use Twig_Loader_Filesystem;
 use Twig_Environment;
 
 /**

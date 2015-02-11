@@ -13,9 +13,7 @@ class SymfonyDumperTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $loader = new \Twig_Loader_Filesystem(__DIR__ . '/../../src/Resources/templates/symfony');
-        $twig = new \Twig_Environment($loader);
-        $this->dumper = new SymfonyDumper($twig, new Filesystem());
+        $this->dumper = new SymfonyDumper();
 
         $this->dir = sys_get_temp_dir() . '/api2symfony.test';
         $fs = new Filesystem();

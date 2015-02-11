@@ -6,7 +6,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Creads\Api2Symfony\SymfonyController;
 use Creads\Api2Symfony\SymfonyAction;
 use Creads\Api2Symfony\SymfonyResponse;
-use Twig_Loader_Filesystem;
 use Twig_Environment;
 
 /**
