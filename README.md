@@ -42,7 +42,7 @@ foreach($controllers as $controller) {
 ## Run tests
 
 ```sh
-composer install --dev
+composer install
 php vendor/bin/phpunit
 ```
 
