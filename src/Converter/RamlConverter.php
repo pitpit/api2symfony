@@ -28,26 +28,26 @@ class RamlConverter implements ConverterInterface
     private $parser;
 
     /**
-     * Config
+     * Options
      *
      * @var array
      */
-    protected $config;
+    protected $options;
 
     /**
      * Constructor
      *
-     * @param Parser $parser
+     * @param array $options
      */
-    public function __construct(array $config = array())
+    public function __construct(array $options = array())
     {
         $this->parser = new Parser();
 
-        $this->config = array(
+        $this->options = array(
             'version_in_namespace' => false
         );
 
-        $this->config = array_merge($this->config, $config);
+        $this->options = array_merge($this->options, $options);
     }
 
     /**
@@ -117,7 +117,7 @@ class RamlConverter implements ConverterInterface
      */
     protected function buildNamespace(ApiDefinition $definition, $namespace)
     {
-        if ($this->config['version_in_namespace'] && $definition->getVersion()) {
+        if ($this->options['version_in_namespace'] && $definition->getVersion()) {
             $namespace .= '\\' . preg_replace(
                 array('/(^[0-9])/', '/[^a-zA-Z0-9]/'),
                 array('Version\1', '_'),
@@ -131,16 +131,16 @@ class RamlConverter implements ConverterInterface
     /**
      * {@inheritDoc}
      */
-    public function convert($filename, $namespace)
+    public function generate($filepath, $namespace)
     {
-        $def = $this->parser->parse($filename);
+        $definition = $this->parser->parse($filepath);
 
-        $namespace = $this->buildNamespace($def, $namespace);
+        $namespace = $this->buildNamespace($definition, $namespace);
 
         $controllers = array();
 
-        if ($def->getResources()) {
-            foreach ($def->getResources() as $resource) {
+        if ($definition->getResources()) {
+            foreach ($definition->getResources() as $resource) {
 
                 $controller = new SymfonyController(ucfirst($resource->getDisplayName()) . 'Controller', $namespace, $resource->getDescription());
                 $this->addActions($controller, $resource);
@@ -149,5 +149,13 @@ class RamlConverter implements ConverterInterface
         }
 
         return $controllers;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function update($newFilepath, $oldFilepath, $namespace)
+    {
+        throw new \Exception('not implemented');
     }
 }

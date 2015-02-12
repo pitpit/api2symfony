@@ -8,12 +8,23 @@ namespace Creads\Api2Symfony\Converter;
 interface ConverterInterface
 {
     /**
-     * Convert a given specification
+     * Generate controller from a given file
      *
-     * @param  mixed    $filepath   Filepath to specification
-     * @param  string   $namespace  Destination namespace
+     * @param  string  $filepath  Specification filepath
+     * @param  string  $namespace Base namespace for controllers
      *
      * @return array                A list of SymfonyController
      */
-    public function convert($filepath, $namespace);
+    public function generate($filepath, $namespace);
+
+    /**
+     * Generate controller from a given file
+     *
+     * @param  string   $newFilepath New specification filepath
+     * @param  string   $oldFilepath Old specification filepath
+     * @param  string   $namespace   Base namespace for controllers
+     *
+     * @return array                A list of SymfonyController
+     */
+    public function update($newFilepath, $oldFilepath, $namespace);
 }

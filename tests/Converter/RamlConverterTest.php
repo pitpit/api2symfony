@@ -16,7 +16,7 @@ class RamlConverterTest extends \PHPUnit_Framework_TestCase
 
     public function parseRaml($raml)
     {
-        return self::$converter->convert(__DIR__ . '/../fixtures/' . $raml, 'Foo\\Bar');
+        return self::$converter->generate(__DIR__ . '/../fixtures/' . $raml, 'Foo\\Bar');
     }
 
     public function testNoResource()

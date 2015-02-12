@@ -13,15 +13,17 @@ But we'd like to also support:
 
 > Feel free to submit your PRs !
 
-## Installation
+Installation
+------------
 
 Using composer:
 
 ```sh
-composer require creads/api2symfony 1.0.*@dev
+composer require "creads/api2symfony":"@dev"
 ```
 
-## Use case
+Usage
+-----
 
 ```php
 //prepare RAML converter
@@ -31,15 +33,16 @@ $converter = new Creads\Api2Symfony\Converter\RamlConverter();
 $dumper = new Creads\Api2Symfony\Dumper\SymfonyDumper();
 
 //get controller models from specification
-$controllers = $converter->convert('path/to/spec.raml');
+$controllers = $converter->generate('path/to/spec.raml');
 
 //dump each controller into current directory
 foreach($controllers as $controller) {
-  $dumper->dump(controller);
+  $dumper->dump($controller);
 }
 ```
 
-## Run tests
+Running tests
+-------------
 
 ```sh
 composer install
