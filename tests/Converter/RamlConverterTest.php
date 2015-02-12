@@ -111,7 +111,7 @@ class RamlConverterTest extends \PHPUnit_Framework_TestCase
     {
         $response = $this->parseRaml('mock_response.raml')[0]->getActions()[0]->getResponses()[0];
         $this->assertEquals(200, $response->getCode());
-        $this->assertEquals('application/json', $response->getContents()[0]->getType());
+        $this->assertEquals('json', $response->getFormat());
     }
 
     public function testResponseHeaders()
@@ -127,16 +127,15 @@ class RamlConverterTest extends \PHPUnit_Framework_TestCase
     public function testMultipleResponseCode()
     {
         $responses = $this->parseRaml('multiple_response.raml')[0]->getActions()[0]->getResponses();
-        $this->assertCount(4, $responses);
+
+        $this->assertCount(5, $responses);
     }
 
     public function testMultipleResponseContentType()
     {
-        self::$converter = new RamlConverter(array('allowed_response_types' => array(
-            'application/json',
-            'application/xml'
-        )));
-        $contents = $this->parseRaml('multiple_response_content_type.raml')[0]->getActions()[0]->getResponses()[0]->getContents();
-        $this->assertCount(2, $contents);
+        $responses = $this->parseRaml('multiple_response_content_type.raml')[0]->getActions()[0]->getResponses();
+
+        $this->assertEquals('json', $responses[0]->getFormat());
+        $this->assertEquals('xml', $responses[1]->getFormat());
     }
 }

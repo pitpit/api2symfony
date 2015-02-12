@@ -51,13 +51,59 @@ class RamlConverter implements ConverterInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function generate($filepath, $namespace)
+    {
+        $definition = $this->parser->parse($filepath);
+
+        $namespace = $this->buildNamespace($definition, $namespace);
+
+        $controllers = array();
+
+        if ($definition->getResources()) {
+            foreach ($definition->getResources() as $resource) {
+                $className = ucfirst($resource->getDisplayName()) . 'Controller';
+                $controller = new SymfonyController($className, $namespace, $resource->getDescription());
+                $this->generateActions($controller, $resource);
+                $controllers[] = $controller;
+            }
+        }
+
+        return $controllers;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function update($newFilepath, $oldFilepath, $namespace)
+    {
+        $newDefinition = $this->parser->parse($newFilepath);
+        $oldDefinition = $this->parser->parse($oldFilepath);
+
+        $namespace = $this->buildNamespace($newDefinition, $namespace);
+
+        $controllers = array();
+
+        if ($definition->getResources()) {
+            foreach ($definition->getResources() as $resource) {
+                $controller = new SymfonyController(ucfirst($resource->getDisplayName()) . 'Controller', $namespace, $resource->getDescription());
+                $this->generateActions($controller, $resource);
+                $controllers[] = $controller;
+            }
+        }
+
+        return $controllers;
+    }
+
+    /**
      * Recursive method which converts raml resource into action and add it to controller
      *
      * @param  SymfonyController $controller Controller where actions will be added
      * @param  Resource $resource
      * @param  string   $chainName
      */
-    protected function addActions(SymfonyController $controller, Resource $resource, $chainName = '')
+    protected function generateActions(SymfonyController $controller, Resource $resource, $chainName = '')
     {
         $actions = array();
 
@@ -83,19 +129,38 @@ class RamlConverter implements ConverterInterface
                             $headers[$key] = isset($value['example']) ? $value['example'] : '';
                         }
                     }
+                    $mimeTypes = $response->getTypes();
+                    if (!count($mimeTypes)) {
+                         $mimeTypes = ['application/json'];
+                    }
 
-                    foreach ($response->getTypes() as $mimeType) {
-                        if (null !== $example = $response->getExampleByType($mimeType)) {
-                            $format= $request->getFormat($mimeType);
-                            $example = str_replace(array("\r\n", "\n", "\r", "\t", "  "), '', $example);
-                            $action->addResponse(new SymfonyResponse(
-                                $code,
-                                $example,
-                                $format,
-                                $headers,
-                                $response->getDescription()?$response->getDescription():$method->getDescription()
-                            ));
+                    foreach ($mimeTypes as $mimeType) {
+                        $format = $request->getFormat($mimeType);
+                        $body = $response->getExampleByType($mimeType);
+
+                        if (null == $body) {
+                            if ('xml' === $format) {
+                                $body = <<< EOT
+<response>
+    <message>RAML had no response information for {$mimeType}</message>
+</response>
+EOT;
+                           } else {
+$body = <<< EOT
+{
+  "message": "RAML had no response information for {$mimeType}"
+}
+EOT;
+                            }
                         }
+
+                        $action->addResponse(new SymfonyResponse(
+                            $code,
+                            $body,
+                            $format,
+                            $headers,
+                            $response->getDescription()?$response->getDescription():$method->getDescription()
+                        ));
                     }
                 }
             }
@@ -104,7 +169,7 @@ class RamlConverter implements ConverterInterface
         }
 
         foreach ($resource->getResources() as $subresource) {
-            $this->addActions($controller, $subresource, $chainName);
+            $this->generateActions($controller, $subresource, $chainName);
         }
     }
 
@@ -126,36 +191,5 @@ class RamlConverter implements ConverterInterface
         }
 
         return $namespace;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function generate($filepath, $namespace)
-    {
-        $definition = $this->parser->parse($filepath);
-
-        $namespace = $this->buildNamespace($definition, $namespace);
-
-        $controllers = array();
-
-        if ($definition->getResources()) {
-            foreach ($definition->getResources() as $resource) {
-
-                $controller = new SymfonyController(ucfirst($resource->getDisplayName()) . 'Controller', $namespace, $resource->getDescription());
-                $this->addActions($controller, $resource);
-                $controllers[] = $controller;
-            }
-        }
-
-        return $controllers;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function update($newFilepath, $oldFilepath, $namespace)
-    {
-        throw new \Exception('not implemented');
     }
 }

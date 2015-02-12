@@ -11,6 +11,7 @@ class SymfonyControllerTest extends \PHPUnit_Framework_TestCase
         $controller = new SymfonyController('mycontroller', 'A\Namespace', 'a description');
 
         $this->assertEquals('mycontroller', $controller->getName());
+        $this->assertEquals('mycontroller', $controller->getShortClassName());
         $this->assertEquals('A\Namespace', $controller->getNamespace());
         $this->assertEquals('a description', $controller->getDescription());
     }
@@ -36,7 +37,6 @@ class SymfonyControllerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    You must provide a controller's name
      */
     public function testNoName()
     {

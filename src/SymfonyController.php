@@ -8,18 +8,18 @@ namespace Creads\Api2Symfony;
 class SymfonyController
 {
     /**
-     * Namespace
+     * Class name
+     *
+     * @var string
+     */
+    private $class;
+
+    /**
+     * Base namespace
      *
      * @var string
      */
     private $namespace;
-
-    /**
-     * Name
-     *
-     * @var string
-     */
-    private $name;
 
     /**
      * Description
@@ -37,21 +37,19 @@ class SymfonyController
 
     /**
      * Constructor
-     * @param string $namespace
-     * @param string $name
-     * @param string $description
-     *
-     * @todo Checks if name ends with 'Controller'
+     * @param string $class     Short class name
+     * @param string $namespace     Base namespace
+     * @param string $description   Description
      */
-    public function __construct($name, $namespace = '', $description = '')
+    public function __construct($class, $namespace = '', $description = '')
     {
-        if (!$name || empty($name)) {
-            throw new \Exception("You must provide a controller's name");
+        if (!$class || empty($class)) {
+            throw new \Exception('Class cannot be empty');
         }
 
+        $this->class = $class;
         $this->namespace = $namespace;
-        $this->name = $name;
-        $this->description = str_replace(array("\r\n", "\n", "\r", "\t", "  "), '', $description);
+        $this->description = $description;
         $this->actions = array();
     }
 
@@ -66,23 +64,35 @@ class SymfonyController
     }
 
     /**
-     * Gets name
+     * Returns the class name without namespace
+     *
+     * @return string
+     */
+    public function getShortClassName()
+    {
+        return $this->class;
+    }
+
+    /**
+     * Returns the class name without namespace
+     *
+     * @deprecated
      *
      * @return string
      */
     public function getName()
     {
-        return $this->name;
+        return $this->getShortClassName();
     }
 
     /**
-     * Gets full class name
+     * Returns the fully qualified name of the class
      *
      * @return string
      */
     public function getClassName()
     {
-        return $this->namespace . '\\' . $this->name;
+        return $this->namespace . '\\' . $this->class;
     }
 
     /**

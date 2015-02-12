@@ -29,13 +29,13 @@ abstract class AbstractFileDumper implements DumperInterface
     }
 
     /**
-     * Get the controller filepath
+     * Get the controller PSR-0 filepath
      *
      * @return string
      */
     protected function getFilepath(SymfonyController $controller, $destination)
     {
-        return $destination . '/' .$controller->getName() . '.php';
+        return $destination . '/' .$controller->getShortClassName() . '.php';
     }
 
     /**

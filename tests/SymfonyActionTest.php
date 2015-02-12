@@ -13,7 +13,7 @@ class SymfonyActionTest extends \PHPUnit_Framework_TestCase
 
     protected function getMockedResponse()
     {
-        $mock = $this->getMock('Creads\Api2Symfony\SymfonyResponse', array(), array(200));
+        $mock = $this->getMock('Creads\Api2Symfony\SymfonyResponse', array(), array(200, ''));
         $mock->method('getCode')->willReturn(200);
 
         return $mock;
