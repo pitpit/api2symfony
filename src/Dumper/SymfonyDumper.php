@@ -135,31 +135,15 @@ EOD;
 
         if ($response->getCode() >= 200 && $response->getCode() < 300) { //valid response
 
-            if ('application/json' === $response->getType()) {
                 $output = <<< EOD
 
-//{$description}
-return new JsonResponse(
-    '{$body}',
-    {$response->getCode()},
-{$this->renderIndent($this->renderArray($response->getHeaders()), 1)}
-);
-EOD;
-            } else {
-                $output = <<< EOD
+if ('{$response->getFormat()}' == \$request->get('_format')) {
 
-//{$description}
-return new Response(
-    '{$body}',
-    {$response->getCode()},
-{$this->renderIndent($this->renderArray($response->getHeaders()), 1)}
-);
-EOD;
-            }
-
-            $output = <<< EOD
-if ('{$response->getType()}' == \$request->headers->get('Content-Type')) {
-{$this->renderIndent($output,1)}
+    return new Response(
+        '{$body}',
+        {$response->getCode()},
+    {$this->renderIndent($this->renderArray($response->getHeaders()), 1)}
+    );
 }
 EOD;
 
@@ -241,7 +225,7 @@ EOD;
     }
 
     /**
-     * Comments code in a simple way
+     * Comments code with simple line comment (//)
      *
      * @return string
      */
@@ -262,6 +246,23 @@ EOD;
                 $output .= "\n";
             }
         }
+
+        return $output;
+    }
+
+    /**
+     * Comments code with multi line comment (//)
+     *
+     * @return string
+     */
+    protected function renderMultiComment($code)
+    {
+        $output = "/*\n";
+        $lines = preg_split('/\r\n|\r|\n/', $code);
+        foreach ($lines as $i => $line) {
+            $output .= ' * ' . $line . "\n";
+        }
+        $output .= " */";
 
         return $output;
     }

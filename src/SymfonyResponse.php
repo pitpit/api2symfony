@@ -35,8 +35,11 @@ class SymfonyResponse
      */
     private $body;
 
-
-    private $type;
+    /**
+     *
+     * @var string
+     */
+    private $format;
 
     /**
      * Constructor
@@ -44,12 +47,12 @@ class SymfonyResponse
      * @param integer   $code           HTTP Code
      * @param array header
      */
-    public function __construct($code, $body, $type, array $headers = array(), $description = null)
+    public function __construct($code, $body, $format = 'json', array $headers = array(), $description = null)
     {
         $this->code         = $code;
         $this->headers      = $headers;
         $this->body         =  $body;
-        $this->type         =  $type;
+        $this->format       =  $format;
         $this->description  = $description;
     }
 
@@ -94,12 +97,12 @@ class SymfonyResponse
     }
 
     /**
-     * Gets the value of type.
+     * Gets the value of format.
      *
-     * @return mixed
+     * @return string
      */
-    public function getType()
+    public function getFormat()
     {
-        return $this->type;
+        return $this->format;
     }
 }

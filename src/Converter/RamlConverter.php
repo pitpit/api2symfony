@@ -2,6 +2,7 @@
 
 namespace Creads\Api2Symfony\Converter;
 
+use Symfony\Component\HttpFoundation\Request;
 use Raml\ApiDefinition;
 use Raml\Parser;
 use Raml\Resource;
@@ -43,7 +44,6 @@ class RamlConverter implements ConverterInterface
         $this->parser = new Parser();
 
         $this->config = array(
-            'allowed_response_types' => array('application/json', 'application/xml'),
             'version_in_namespace' => false
         );
 
@@ -63,6 +63,8 @@ class RamlConverter implements ConverterInterface
 
         $chainName = $chainName . '_' . strtolower($resource->getDisplayName());
 
+        $request = new Request();
+
         foreach ($resource->getMethods() as $method) {
             $actionName = strtolower($method->getType()) . str_replace(' ', '', ucwords(str_replace('_', ' ', $chainName))) . 'Action';
             $route = new SymfonyRoute($resource->getUri(), strtolower($method->getType() . $chainName));
@@ -81,13 +83,18 @@ class RamlConverter implements ConverterInterface
                             $headers[$key] = isset($value['example']) ? $value['example'] : '';
                         }
                     }
-                    // $_response = new SymfonyResponse($code, $headers, $response->getDescription());
-                    foreach ($this->config['allowed_response_types'] as $allowedResponsetype) {
-                        if (null !== $example = $response->getExampleByType($allowedResponsetype)) {
+
+                    foreach ($response->getTypes() as $mimeType) {
+                        if (null !== $example = $response->getExampleByType($mimeType)) {
+                            $format= $request->getFormat($mimeType);
                             $example = str_replace(array("\r\n", "\n", "\r", "\t", "  "), '', $example);
-                            $_response = new SymfonyResponse($code, $example, $allowedResponsetype, $headers, $response->getDescription()?$response->getDescription():$method->getDescription());
-                            $action->addResponse($_response);
-                            // $_response->addContent(new SymfonyResponseContent($allowedResponsetype, str_replace(array("\r\n", "\n", "\r", "\t", "  "), '', $example)));
+                            $action->addResponse(new SymfonyResponse(
+                                $code,
+                                $example,
+                                $format,
+                                $headers,
+                                $response->getDescription()?$response->getDescription():$method->getDescription()
+                            ));
                         }
                     }
                 }

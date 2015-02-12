@@ -33,9 +33,9 @@ class ContentNegociationListener implements EventSubscriberInterface
     /**
      * @var array
      */
-    private $defaultOptions = array(
-        'format_priorities' => array()
-    );
+    private $defaultOptions = [
+        'format_priorities' => []
+    ];
 
     /**
      * @var array
@@ -52,7 +52,7 @@ class ContentNegociationListener implements EventSubscriberInterface
     public function __construct(
         HttpKernelInterface $app,
         FormatNegotiatorInterface $formatNegotiator,
-        array $options = array()
+        array $options = []
     ) {
         $this->app                = $app;
         $this->formatNegotiator   = $formatNegotiator;
