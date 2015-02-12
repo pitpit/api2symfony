@@ -131,7 +131,7 @@ class RamlConverter implements ConverterInterface
                     }
                     $mimeTypes = $response->getTypes();
                     if (!count($mimeTypes)) {
-                         $mimeTypes = ['application/json'];
+                        $mimeTypes = ['application/json'];
                     }
 
                     foreach ($mimeTypes as $mimeType) {
@@ -145,7 +145,7 @@ class RamlConverter implements ConverterInterface
     <message>RAML had no response information for {$mimeType}</message>
 </response>
 EOT;
-                           } else {
+                            } else {
 $body = <<< EOT
 {
   "message": "RAML had no response information for {$mimeType}"
