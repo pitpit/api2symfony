@@ -84,7 +84,6 @@ public function {$action->getName()}(Request \$request)
 {
 {$responses}
     //returns an exception if the api does not know how to handle the request
-    //you should remove it when implmenting this method
     throw new BadRequestHttpException("Don't know how to handle this request");
 }
 EOD;
@@ -99,7 +98,7 @@ EOD;
      */
     protected function renderMethodDocblock(SymfonyAction $action)
     {
-        $exceptions = '';
+        $exceptions = "@throws BadRequestHttpException If the api does not know how to handle the request\n";
         foreach ($action->getResponses() as $response) {
             if ($response->getCode() < 200 || $response->getCode() >= 300) {
                 $exceptions .= "@throws HttpException {$response->getDescription()}\n";
