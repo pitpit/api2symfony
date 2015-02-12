@@ -129,7 +129,7 @@ EOD;
     protected function renderResponse(SymfonyResponse $response)
     {
 
-        $body = addcslashes($response->getBody(), "'");
+        $body = "'" . trim(addcslashes($response->getBody(), "'")) . "'";
         $description = $response->getDescription()?$response->getDescription():'<no description>';
 
         if ($response->getCode() >= 200 && $response->getCode() < 300) { //valid response
@@ -139,7 +139,7 @@ EOD;
 if ('{$response->getFormat()}' == \$request->get('_format')) {
 
     return new Response(
-        '{$body}',
+{$this->renderIndent($body, 2)},
         {$response->getCode()},
     {$this->renderIndent($this->renderArray($response->getHeaders()), 1)}
     );
@@ -153,7 +153,7 @@ EOD;
 //{$description}
 throw new HttpException(
     {$response->getCode()},
-    '{$body}',
+{$this->renderIndent($body, 1)},
     null,
 {$this->renderIndent($this->renderArray($response->getHeaders()), 1)}
 );
@@ -191,14 +191,13 @@ EOD;
 
             $line = rtrim($line);
             if (!empty($line)) {
-                for ($i = 0; $i < $tabs; $i++) {
+                for ($j = 0; $j < $tabs; $j++) {
                     $output .= '    ';
                 }
                 $output .= $line;
             }
 
-            $last = ($i >= ($count - 1));
-            if (!$last) {
+            if ($i < ($count - 1)) {
                 $output .= "\n";
             }
         }
@@ -240,8 +239,7 @@ EOD;
                 $output .= '// ' . $line;
             }
 
-            $last = ($i >= ($count - 1));
-            if (!$last) {
+            if ($i < ($count - 1)) {
                 $output .= "\n";
             }
         }
