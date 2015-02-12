@@ -79,16 +79,17 @@ EOD;
 
         $output = <<< EOD
 
-{$this->renderMethodDocblock($action)}
-public function {$action->getName()}(Request \$request)
-{
-{$responses}
-    //returns an exception if the api does not know how to handle the request
-    throw new BadRequestHttpException("Don't know how to handle this request");
-}
+    {$this->renderMethodDocblock($action)}
+    public function {$action->getName()}(Request \$request)
+    {
+    {$responses}
+
+        //returns an exception if the api does not know how to handle the request
+        throw new BadRequestHttpException("Don't know how to handle this request");
+    }
 EOD;
 
-        return $this->renderIndent($output, 1);
+        return $output;
     }
 
     /**
@@ -129,36 +130,45 @@ EOD;
     protected function renderResponse(SymfonyResponse $response)
     {
 
-        $body = "'" . trim(addcslashes($response->getBody(), "'")) . "'";
+        $body = trim(addcslashes($response->getBody(), "'"));
         $description = $response->getDescription()?$response->getDescription():'<no description>';
 
         if ($response->getCode() >= 200 && $response->getCode() < 300) { //valid response
 
                 $output = <<< EOD
 
-if ('{$response->getFormat()}' == \$request->get('_format')) {
 
-    return new Response(
-{$this->renderIndent($body, 2)},
-        {$response->getCode()},
-    {$this->renderIndent($this->renderArray($response->getHeaders()), 1)}
-    );
-}
+    if ('{$response->getFormat()}' == \$request->get('_format')) {
+
+        \$body = <<< EOT
+{$body}
+EOT;
+
+        return new Response(
+            \$body,
+            {$response->getCode()},
+{$this->renderIndent($this->renderArray($response->getHeaders()), 3)}
+        );
+    }
 EOD;
 
-            $output = $this->renderIndent($output, 1);
         } else { //invalid response
             $output = <<< EOD
 
-//{$description}
-throw new HttpException(
-    {$response->getCode()},
-{$this->renderIndent($body, 1)},
-    null,
-{$this->renderIndent($this->renderArray($response->getHeaders()), 1)}
-);
+
+    //ERROR: {$description}
+    \$body = <<< EOT
+{$body}
+EOT;
+
+    throw new HttpException(
+        {$response->getCode()},
+        \$body,
+        null,
+{$this->renderIndent($this->renderArray($response->getHeaders()), 2)}
+    );
 EOD;
-            $output = $this->renderIndent($this->renderComment($output), 1);
+            $output = $this->renderComment($output);
         }
 
 
