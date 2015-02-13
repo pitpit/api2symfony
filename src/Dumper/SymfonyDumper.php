@@ -79,7 +79,7 @@ EOD;
 
         $output = <<< EOD
 
-    {$this->renderMethodDocblock($action)}
+{$this->renderIndent($this->renderMethodDocblock($action), 1)}
     public function {$action->getName()}(Request \$request)
     {
     {$responses}
@@ -99,8 +99,10 @@ EOD;
      */
     protected function renderMethodDocblock(SymfonyAction $action)
     {
+        $responses = $action->getResponses();
+
         $exceptions = "@throws BadRequestHttpException If the api does not know how to handle the request\n";
-        foreach ($action->getResponses() as $response) {
+        foreach ($responses as $response) {
             if ($response->getCode() < 200 || $response->getCode() >= 300) {
                 $exceptions .= "@throws HttpException {$response->getDescription()}\n";
             }
@@ -110,7 +112,10 @@ EOD;
         $output = <<< EOD
 {$description}
 
-@Route("{$action->getRoute()->getPath()}", name="{$action->getRoute()->getName()}")
+@Route(
+    "{$action->getRoute()->getPath()}",
+    name="{$action->getRoute()->getName()}"
+)
 @Method({"{$action->getMethod()}"})
 
 {$exceptions}
