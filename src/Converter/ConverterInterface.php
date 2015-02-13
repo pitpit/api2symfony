@@ -16,15 +16,4 @@ interface ConverterInterface
      * @return array                A list of ControllerMock
      */
     public function generate($filepath, $namespace);
-
-    /**
-     * Generate controller from a given file
-     *
-     * @param  string   $newFilepath New specification filepath
-     * @param  string   $oldFilepath Old specification filepath
-     * @param  string   $namespace   Base namespace for controllers
-     *
-     * @return array                A list of ControllerMock
-     */
-    public function update($newFilepath, $oldFilepath, $namespace);
 }

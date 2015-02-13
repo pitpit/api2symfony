@@ -60,17 +60,6 @@ class RamlConverter implements ConverterInterface
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function update($newFilepath, $oldFilepath, $namespace)
-    {
-        $newDefinition = $this->parser->parse($newFilepath);
-        $oldDefinition = $this->parser->parse($oldFilepath);
-
-        throw new \Exception('Not implemented');
-    }
-
-    /**
      * Generate controller according to definition
      *
      * @return array of ControllerMock

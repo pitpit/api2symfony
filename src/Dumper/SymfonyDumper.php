@@ -2,11 +2,9 @@
 
 namespace Creads\Api2Symfony\Dumper;
 
-use Symfony\Component\Filesystem\Filesystem;
 use Creads\Api2Symfony\Mock\ControllerMock;
 use Creads\Api2Symfony\Mock\ActionMock;
 use Creads\Api2Symfony\Mock\ResponseMock;
-use Twig_Environment;
 
 /**
  * Dump a symfony controller
