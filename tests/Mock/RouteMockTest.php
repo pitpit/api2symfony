@@ -2,13 +2,13 @@
 
 namespace Creads\Tests\Api2Symfony\Mock;
 
-use Creads\Api2Symfony\Mock\RouteDefinition;
+use Creads\Api2Symfony\Mock\RouteMock;
 
-class RouteDefinitionTest extends \PHPUnit_Framework_TestCase
+class RouteMockTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
-        $route = new RouteDefinition('a/path/to', 'myroute');
+        $route = new RouteMock('a/path/to', 'myroute');
 
         $this->assertEquals('myroute', $route->getName());
         $this->assertEquals('a/path/to', $route->getPath());
@@ -19,7 +19,7 @@ class RouteDefinitionTest extends \PHPUnit_Framework_TestCase
      */
     public function testNoPath()
     {
-        new RouteDefinition('', 'foo');
+        new RouteMock('', 'foo');
     }
 
     /**
@@ -27,6 +27,6 @@ class RouteDefinitionTest extends \PHPUnit_Framework_TestCase
      */
     public function testNoName()
     {
-        new RouteDefinition('/foo', '');
+        new RouteMock('/foo', '');
     }
 }

@@ -13,7 +13,7 @@ interface ConverterInterface
      * @param  string  $filepath  Specification filepath
      * @param  string  $namespace Base namespace for controllers
      *
-     * @return array                A list of ControllerDefinition
+     * @return array                A list of ControllerMock
      */
     public function generate($filepath, $namespace);
 }

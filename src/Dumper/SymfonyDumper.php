@@ -2,9 +2,9 @@
 
 namespace Creads\Api2Symfony\Dumper;
 
-use Creads\Api2Symfony\Mock\ControllerDefinition;
-use Creads\Api2Symfony\Mock\ActionDefinition;
-use Creads\Api2Symfony\Mock\ResponseDefinition;
+use Creads\Api2Symfony\Mock\ControllerMock;
+use Creads\Api2Symfony\Mock\ActionMock;
+use Creads\Api2Symfony\Mock\ResponseMock;
 
 /**
  * Dump a symfony controller
@@ -16,7 +16,7 @@ class SymfonyDumper extends AbstractFileDumper
     /**
      * {@inheritDoc}
      */
-    protected function render(ControllerDefinition $controller)
+    protected function render(ControllerMock $controller)
     {
         return $this->renderClass($controller);
     }
@@ -26,7 +26,7 @@ class SymfonyDumper extends AbstractFileDumper
      *
      * @return string
      */
-    protected function renderClass(ControllerDefinition $controller)
+    protected function renderClass(ControllerMock $controller)
     {
         $methods = '';
         foreach ($controller->getActions() as $action) {
@@ -68,7 +68,7 @@ EOD;
      *
      * @return string
      */
-    protected function renderMethod(ActionDefinition $action)
+    protected function renderMethod(ActionMock $action)
     {
         $responses = '';
         foreach ($action->getResponses() as $response) {
@@ -95,7 +95,7 @@ EOD;
      *
      * @return string
      */
-    protected function renderMethodDocblock(ActionDefinition $action)
+    protected function renderMethodDocblock(ActionMock $action)
     {
         $responses = $action->getResponses();
 
@@ -130,7 +130,7 @@ EOD;
      *
      * @return string
      */
-    protected function renderResponse(ResponseDefinition $response)
+    protected function renderResponse(ResponseMock $response)
     {
 
         $body = trim(addcslashes($response->getBody(), "'"));

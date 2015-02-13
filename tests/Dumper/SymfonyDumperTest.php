@@ -4,7 +4,7 @@ namespace Creads\Tests\Api2Symfony\Converter;
 
 use Raml\Parser;
 use Creads\Api2Symfony\Dumper\SymfonyDumper;
-use Creads\Api2Symfony\Mock\ControllerDefinition;
+use Creads\Api2Symfony\Mock\ControllerMock;
 use Symfony\Component\Filesystem\Filesystem;
 
 class SymfonyDumperTest extends \PHPUnit_Framework_TestCase
@@ -28,7 +28,7 @@ class SymfonyDumperTest extends \PHPUnit_Framework_TestCase
 
     public function testExists()
     {
-        $controller = new ControllerDefinition('MyController');
+        $controller = new ControllerMock('MyController');
 
         @unlink($this->dir . '/MyController.php');
 
@@ -41,7 +41,7 @@ class SymfonyDumperTest extends \PHPUnit_Framework_TestCase
 
     public function testDump()
     {
-        $controller = new ControllerDefinition('MyController');
+        $controller = new ControllerMock('MyController');
         $filename = $this->dumper->dump($controller, $this->dir);
 
         $this->assertTrue(file_exists($this->dir . '/MyController.php'));
@@ -52,7 +52,7 @@ class SymfonyDumperTest extends \PHPUnit_Framework_TestCase
     {
         @file_put_contents($this->dir . '/MyController.php', 'test');
 
-        $controller = new ControllerDefinition('MyController');
+        $controller = new ControllerMock('MyController');
         $filename = $this->dumper->dump($controller, $this->dir);
 
         $this->assertTrue(file_exists($this->dir . '/MyController.php'));
@@ -67,7 +67,7 @@ class SymfonyDumperTest extends \PHPUnit_Framework_TestCase
         @file_put_contents($this->dir . '/MyController.php', 'test');
         @file_put_contents($this->dir . '/MyController.php.old', 'test2');
 
-        $controller = new ControllerDefinition('MyController');
+        $controller = new ControllerMock('MyController');
         $filename = $this->dumper->dump($controller, $this->dir);
 
         $this->assertTrue(file_exists($this->dir . '/MyController.php.old~2'), 'A new copy of the old file has been created');
