@@ -24,7 +24,8 @@
         "symfony/filesystem": "~2.6",
         "willdurand/negotiation": "~1.3",
         "symfony/http-foundation": "~2.6",
-        "pitpit/php-diff": "@dev"
+        "pitpit/php-diff": "@dev",
+        "mandango/mondator": "@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "4.*"
