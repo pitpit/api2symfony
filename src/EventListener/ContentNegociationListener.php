@@ -6,6 +6,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Negotiation\FormatNegotiatorInterface;
 use Negotiation\NegotiatorInterface;
 use Negotiation\Decoder\DecoderProviderInterface;
@@ -65,11 +66,14 @@ class ContentNegociationListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => array('onKernelRequest'),
+            //make sure it's run before Symfony\Component\HttpKernel\EventListener\ExceptionListener
+            KernelEvents::REQUEST => array('onKernelRequest', 64),
         );
     }
 
     /**
+     * Guess and set _format parameter from Accept header in request
+     *
      * @param GetResponseEvent $event
      */
     public function onKernelRequest(GetResponseEvent $event)
@@ -87,4 +91,5 @@ class ContentNegociationListener implements EventSubscriberInterface
             }
         }
     }
+
 }
