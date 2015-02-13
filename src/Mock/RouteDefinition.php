@@ -3,6 +3,8 @@
 namespace Creads\Api2Symfony\Mock;
 
 /**
+ * This class abstracts a route definition (related to an action) guessed from API specification
+ *
  * @author Quentin <q.pautrat@creads.org>
  */
 class RouteDefinition

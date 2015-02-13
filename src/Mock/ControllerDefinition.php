@@ -3,7 +3,7 @@
 namespace Creads\Api2Symfony\Mock;
 
 /**
- * This class abstracts controller concept from the API specification
+ * This class abstracts controller definition guessed from API specification
  *
  * @author Quentin <q.pautrat@creads.org>
  */

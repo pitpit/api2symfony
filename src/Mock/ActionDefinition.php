@@ -3,6 +3,9 @@
 namespace Creads\Api2Symfony\Mock;
 
 /**
+ *
+ * This class abstracts action definition (in a controller) guessed from API specification
+ *
  * @author Quentin <q.pautrat@creads.org>
  */
 class ActionDefinition
