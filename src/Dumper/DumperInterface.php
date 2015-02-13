@@ -2,27 +2,27 @@
 
 namespace Creads\Api2Symfony\Dumper;
 
-use Creads\Api2Symfony\Mock\ControllerMock;
+use Creads\Api2Symfony\Mock\ControllerDefinition;
 
 interface DumperInterface
 {
     /**
      * Does a file exist in $destination directory for $controller
      *
-     * @param  ControllerMock $controller
+     * @param  ControllerDefinition $controller
      * @param  string            $destination
      *
      * @return boolean
      */
-    public function exists(ControllerMock $controller, $destination = '.');
+    public function exists(ControllerDefinition $controller, $destination = '.');
 
     /**
      * Dump $controller as a file into $destinaton directory
      *
-     * @param  ControllerMock $controller
+     * @param  ControllerDefinition $controller
      * @param  string            $destination
      *
      * @return array where key is a filename and value the output
      */
-    public function dump(ControllerMock $controller, $destination = '.');
+    public function dump(ControllerDefinition $controller, $destination = '.');
 }

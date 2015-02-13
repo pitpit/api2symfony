@@ -3,9 +3,11 @@
 namespace Creads\Api2Symfony\Mock;
 
 /**
+ * This class abstracts controller concept from the API specification
+ *
  * @author Quentin <q.pautrat@creads.org>
  */
-class ControllerMock
+class ControllerDefinition
 {
     /**
      * Class name
@@ -108,9 +110,9 @@ class ControllerMock
     /**
      * Add an action to controller. If an action with the same name alreaday exists, it will erase it.
      *
-     * @param ActionMock $action An array of ActionMock
+     * @param ActionDefinition $action An array of ActionDefinition
      */
-    public function addAction(ActionMock $action)
+    public function addAction(ActionDefinition $action)
     {
         $this->actions[] = $action;
     }
@@ -118,7 +120,7 @@ class ControllerMock
     /**
      * Gets actions
      *
-     * @return array An array of ActionMock
+     * @return array An array of ActionDefinition
      */
     public function getActions()
     {

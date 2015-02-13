@@ -5,7 +5,7 @@ namespace Creads\Api2Symfony\Mock;
 /**
  * @author Quentin <q.pautrat@creads.org>
  */
-class ResponseMock
+class ResponseDefinition
 {
     /**
      * HTTP Code

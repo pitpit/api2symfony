@@ -7,13 +7,13 @@ use Raml\ApiDefinition;
 use Raml\Parser;
 use Raml\Resource;
 
-use Creads\Api2Symfony\Mock\ControllerMock;
-use Creads\Api2Symfony\Mock\ActionMock;
-use Creads\Api2Symfony\Mock\RouteMock;
-use Creads\Api2Symfony\Mock\ResponseMock;
+use Creads\Api2Symfony\Mock\ControllerDefinition;
+use Creads\Api2Symfony\Mock\ActionDefinition;
+use Creads\Api2Symfony\Mock\RouteDefinition;
+use Creads\Api2Symfony\Mock\ResponseDefinition;
 
 /**
- * Provide a way to convert a RAML specification to a list of ControllerMock
+ * Provide a way to convert a RAML specification to a list of ControllerDefinition
  *
  * @author Quentin <q.pautrat@creads.org>
  */
@@ -62,7 +62,7 @@ class RamlConverter implements ConverterInterface
     /**
      * Generate controller according to definition
      *
-     * @return array of ControllerMock
+     * @return array of ControllerDefinition
      */
     protected function generateControllers(ApiDefinition $definition, $namespace)
     {
@@ -72,7 +72,7 @@ class RamlConverter implements ConverterInterface
 
         if ($definition->getResources()) {
             foreach ($definition->getResources() as $resource) {
-                $controller = new ControllerMock(ucfirst($resource->getDisplayName()) . 'Controller', $namespace, $resource->getDescription());
+                $controller = new ControllerDefinition(ucfirst($resource->getDisplayName()) . 'Controller', $namespace, $resource->getDescription());
                 $this->generateActions($controller, $resource);
                 $controllers[] = $controller;
             }
@@ -84,11 +84,11 @@ class RamlConverter implements ConverterInterface
     /**
      * Recursive method which converts raml resource into action and add it to controller
      *
-     * @param  ControllerMock $controller Controller where actions will be added
+     * @param  ControllerDefinition $controller Controller where actions will be added
      * @param  Resource $resource
      * @param  string   $chainName
      */
-    protected function generateActions(ControllerMock $controller, Resource $resource, $chainName = '')
+    protected function generateActions(ControllerDefinition $controller, Resource $resource, $chainName = '')
     {
         $actions = array();
 
@@ -98,8 +98,8 @@ class RamlConverter implements ConverterInterface
 
         foreach ($resource->getMethods() as $method) {
             $actionName = strtolower($method->getType()) . str_replace(' ', '', ucwords(str_replace('_', ' ', $chainName))) . 'Action';
-            $route = new RouteMock($resource->getUri(), strtolower($method->getType() . $chainName));
-            $action = new ActionMock($actionName, $route, $method->getType(), $method->getDescription());
+            $route = new RouteDefinition($resource->getUri(), strtolower($method->getType() . $chainName));
+            $action = new ActionDefinition($actionName, $route, $method->getType(), $method->getDescription());
 
             preg_match_all('/\{[a-zA-Z]+\}/', $resource->getUri(), $parameters);
             foreach ($parameters[0] as $parameter) {
@@ -139,7 +139,7 @@ EOT;
                             }
                         }
 
-                        $action->addResponse(new ResponseMock(
+                        $action->addResponse(new ResponseDefinition(
                             $code,
                             $body,
                             $format,

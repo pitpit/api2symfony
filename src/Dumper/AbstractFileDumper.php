@@ -3,7 +3,7 @@
 namespace Creads\Api2Symfony\Dumper;
 
 use Symfony\Component\Filesystem\Filesystem;
-use Creads\Api2Symfony\Mock\ControllerMock;
+use Creads\Api2Symfony\Mock\ControllerDefinition;
 use Twig_Environment;
 
 /**
@@ -33,7 +33,7 @@ abstract class AbstractFileDumper implements DumperInterface
      *
      * @return string
      */
-    protected function getFilepath(ControllerMock $controller, $destination)
+    protected function getFilepath(ControllerDefinition $controller, $destination)
     {
         return $destination . '/' .$controller->getShortClassName() . '.php';
     }
@@ -41,7 +41,7 @@ abstract class AbstractFileDumper implements DumperInterface
     /**
      * {@inheritDoc}
      */
-    public function exists(ControllerMock $controller, $destination = '.')
+    public function exists(ControllerDefinition $controller, $destination = '.')
     {
         $filepath = $this->getFilepath($controller, $destination);
 
@@ -53,12 +53,12 @@ abstract class AbstractFileDumper implements DumperInterface
      *
      * @retirn string
      */
-    abstract protected function render(ControllerMock $controller);
+    abstract protected function render(ControllerDefinition $controller);
 
     /**
      * {@inheritDoc}
      */
-    public function dump(ControllerMock $controller, $destination = '.')
+    public function dump(ControllerDefinition $controller, $destination = '.')
     {
         $output = $this->render($controller);
 

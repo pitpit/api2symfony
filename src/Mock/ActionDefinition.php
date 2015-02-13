@@ -5,7 +5,7 @@ namespace Creads\Api2Symfony\Mock;
 /**
  * @author Quentin <q.pautrat@creads.org>
  */
-class ActionMock
+class ActionDefinition
 {
     /**
      * Name
@@ -24,7 +24,7 @@ class ActionMock
     /**
      * Route
      *
-     * @var ActionMockRoute
+     * @var ActionDefinitionRoute
      */
     private $route;
 
@@ -53,13 +53,13 @@ class ActionMock
      * Constructor
      *
      * @param string             $name
-     * @param ActionMockRoute $route
+     * @param ActionDefinitionRoute $route
      * @param string             $method
      * @param string             $description
      *
      * @todo Checks if name ends with 'Action'
      */
-    public function __construct($name, RouteMock $route, $method, $description = '')
+    public function __construct($name, RouteDefinition $route, $method, $description = '')
     {
         if (!$name || empty($name)) {
             throw new \Exception("You must provide a name for the action");
@@ -81,12 +81,12 @@ class ActionMock
      * Factory method for chainability
      *
      * @param  string       $name
-     * @param  RouteMock $route
+     * @param  RouteDefinition $route
      * @param  string       $method
      * @param  string       $description
      * @return SymonyAction
      */
-    public static function create($name, RouteMock $route, $method, $description = '')
+    public static function create($name, RouteDefinition $route, $method, $description = '')
     {
         return new static($name, $route, $method, $description);
     }
@@ -114,7 +114,7 @@ class ActionMock
     /**
      * Gets route
      *
-     * @return ActionMockRoute
+     * @return ActionDefinitionRoute
      */
     public function getRoute()
     {
@@ -135,7 +135,7 @@ class ActionMock
      * Adds parameter
      *
      * @param string $parameter
-     * @return ActionMock Fluent method
+     * @return ActionDefinition Fluent method
      */
     public function addParameter($parameter)
     {
@@ -156,10 +156,10 @@ class ActionMock
 
     /**
      * Add response
-     * @param ResponseMock $response
-     * @return  ActionMock Fluent interface
+     * @param ResponseDefinition $response
+     * @return  ActionDefinition Fluent interface
      */
-    public function addResponse(ResponseMock $response)
+    public function addResponse(ResponseDefinition $response)
     {
         $this->responses[] = $response;
 
