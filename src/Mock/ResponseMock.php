@@ -1,11 +1,11 @@
 <?php
 
-namespace Creads\Api2Symfony;
+namespace Creads\Api2Symfony\Mock;
 
 /**
  * @author Quentin <q.pautrat@creads.org>
  */
-class SymfonyResponse
+class ResponseMock
 {
     /**
      * HTTP Code

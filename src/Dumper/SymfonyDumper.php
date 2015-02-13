@@ -3,9 +3,9 @@
 namespace Creads\Api2Symfony\Dumper;
 
 use Symfony\Component\Filesystem\Filesystem;
-use Creads\Api2Symfony\SymfonyController;
-use Creads\Api2Symfony\SymfonyAction;
-use Creads\Api2Symfony\SymfonyResponse;
+use Creads\Api2Symfony\Mock\ControllerMock;
+use Creads\Api2Symfony\Mock\ActionMock;
+use Creads\Api2Symfony\Mock\ResponseMock;
 use Twig_Environment;
 
 /**
@@ -18,7 +18,7 @@ class SymfonyDumper extends AbstractFileDumper
     /**
      * {@inheritDoc}
      */
-    protected function render(SymfonyController $controller)
+    protected function render(ControllerMock $controller)
     {
         return $this->renderClass($controller);
     }
@@ -28,7 +28,7 @@ class SymfonyDumper extends AbstractFileDumper
      *
      * @return string
      */
-    protected function renderClass(SymfonyController $controller)
+    protected function renderClass(ControllerMock $controller)
     {
         $methods = '';
         foreach ($controller->getActions() as $action) {
@@ -70,7 +70,7 @@ EOD;
      *
      * @return string
      */
-    protected function renderMethod(SymfonyAction $action)
+    protected function renderMethod(ActionMock $action)
     {
         $responses = '';
         foreach ($action->getResponses() as $response) {
@@ -97,7 +97,7 @@ EOD;
      *
      * @return string
      */
-    protected function renderMethodDocblock(SymfonyAction $action)
+    protected function renderMethodDocblock(ActionMock $action)
     {
         $responses = $action->getResponses();
 
@@ -132,7 +132,7 @@ EOD;
      *
      * @return string
      */
-    protected function renderResponse(SymfonyResponse $response)
+    protected function renderResponse(ResponseMock $response)
     {
 
         $body = trim(addcslashes($response->getBody(), "'"));

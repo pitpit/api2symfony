@@ -1,11 +1,11 @@
 <?php
 
-namespace Creads\Api2Symfony;
+namespace Creads\Api2Symfony\Mock;
 
 /**
  * @author Quentin <q.pautrat@creads.org>
  */
-class SymfonyController
+class ControllerMock
 {
     /**
      * Class name
@@ -108,9 +108,9 @@ class SymfonyController
     /**
      * Add an action to controller. If an action with the same name alreaday exists, it will erase it.
      *
-     * @param SymfonyAction $action An array of SymfonyAction
+     * @param ActionMock $action An array of ActionMock
      */
-    public function addAction(SymfonyAction $action)
+    public function addAction(ActionMock $action)
     {
         $this->actions[] = $action;
     }
@@ -118,7 +118,7 @@ class SymfonyController
     /**
      * Gets actions
      *
-     * @return array An array of SymfonyAction
+     * @return array An array of ActionMock
      */
     public function getActions()
     {

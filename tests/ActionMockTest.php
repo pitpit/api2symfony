@@ -2,18 +2,18 @@
 
 namespace Creads\Tests\Api2Symfony;
 
-use Creads\Api2Symfony\SymfonyAction;
+use Creads\Api2Symfony\Mock\ActionMock;
 
-class SymfonyActionTest extends \PHPUnit_Framework_TestCase
+class ActionMockTest extends \PHPUnit_Framework_TestCase
 {
     protected function getMockedRoute()
     {
-        return $this->getMock('Creads\Api2Symfony\SymfonyRoute', array(), array('/route_path', 'route_name'));
+        return $this->getMock('Creads\Api2Symfony\Mock\RouteMock', array(), array('/route_path', 'route_name'));
     }
 
     protected function getMockedResponse()
     {
-        $mock = $this->getMock('Creads\Api2Symfony\SymfonyResponse', array(), array(200, ''));
+        $mock = $this->getMock('Creads\Api2Symfony\Mock\ResponseMock', array(), array(200, ''));
         $mock->method('getCode')->willReturn(200);
 
         return $mock;
@@ -22,7 +22,7 @@ class SymfonyActionTest extends \PHPUnit_Framework_TestCase
     public function testConstruct()
     {
         $route = $this->getMockedRoute();
-        $action = new SymfonyAction('myname', $route, 'get', 'my description');
+        $action = new ActionMock('myname', $route, 'get', 'my description');
 
         $this->assertEquals('myname', $action->getName());
         $this->assertSame($route, $action->getRoute());
@@ -33,7 +33,7 @@ class SymfonyActionTest extends \PHPUnit_Framework_TestCase
     public function testConstructDefaultValue()
     {
         $route = $this->getMockedRoute();
-        $action = new SymfonyAction('myname', $route, 'get');
+        $action = new ActionMock('myname', $route, 'get');
         $this->assertEquals('', $action->getDescription());
         $this->assertEquals(array(), $action->getParameters());
     }
@@ -41,7 +41,7 @@ class SymfonyActionTest extends \PHPUnit_Framework_TestCase
     public function testAddParameterAndGetParameters()
     {
         $route = $this->getMockedRoute();
-        $action = new SymfonyAction('myname', $route, 'get', 'my description');
+        $action = new ActionMock('myname', $route, 'get', 'my description');
         $action->addParameter('my-parameter');
 
         $this->assertEquals(array('my-parameter'), $action->getParameters());
@@ -50,7 +50,7 @@ class SymfonyActionTest extends \PHPUnit_Framework_TestCase
     public function testSetResponseAndGetResponse()
     {
         $route = $this->getMockedRoute();
-        $action = new SymfonyAction('myname', $route, 'get', 'my description');
+        $action = new ActionMock('myname', $route, 'get', 'my description');
         $response = $this->getMockedResponse();
         $action->addResponse($response);
 
@@ -64,7 +64,7 @@ class SymfonyActionTest extends \PHPUnit_Framework_TestCase
     public function testNoName()
     {
         $route = $this->getMockedRoute();
-        new SymfonyAction('', $route, 'get');
+        new ActionMock('', $route, 'get');
     }
 
     /**
@@ -74,6 +74,6 @@ class SymfonyActionTest extends \PHPUnit_Framework_TestCase
     public function testNoMethod()
     {
         $route = $this->getMockedRoute();
-        new SymfonyAction('test', $route, '');
+        new ActionMock('test', $route, '');
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Creads\Api2Symfony;
+namespace Creads\Api2Symfony\Mock;
 
 /**
  * @author Quentin <q.pautrat@creads.org>
  */
-class SymfonyAction
+class ActionMock
 {
     /**
      * Name
@@ -24,7 +24,7 @@ class SymfonyAction
     /**
      * Route
      *
-     * @var SymfonyActionRoute
+     * @var ActionMockRoute
      */
     private $route;
 
@@ -53,13 +53,13 @@ class SymfonyAction
      * Constructor
      *
      * @param string             $name
-     * @param SymfonyActionRoute $route
+     * @param ActionMockRoute $route
      * @param string             $method
      * @param string             $description
      *
      * @todo Checks if name ends with 'Action'
      */
-    public function __construct($name, SymfonyRoute $route, $method, $description = '')
+    public function __construct($name, RouteMock $route, $method, $description = '')
     {
         if (!$name || empty($name)) {
             throw new \Exception("You must provide a action's name");
@@ -81,12 +81,12 @@ class SymfonyAction
      * Factory method for chainability
      *
      * @param  string       $name
-     * @param  SymfonyRoute $route
+     * @param  RouteMock $route
      * @param  string       $method
      * @param  string       $description
      * @return SymonyAction
      */
-    public static function create($name, SymfonyRoute $route, $method, $description = '')
+    public static function create($name, RouteMock $route, $method, $description = '')
     {
         return new static($name, $route, $method, $description);
     }
@@ -114,7 +114,7 @@ class SymfonyAction
     /**
      * Gets route
      *
-     * @return SymfonyActionRoute
+     * @return ActionMockRoute
      */
     public function getRoute()
     {
@@ -135,7 +135,7 @@ class SymfonyAction
      * Adds parameter
      *
      * @param string $parameter
-     * @return SymfonyAction Fluent method
+     * @return ActionMock Fluent method
      */
     public function addParameter($parameter)
     {
@@ -156,10 +156,10 @@ class SymfonyAction
 
     /**
      * Add response
-     * @param SymfonyResponse $response
-     * @return  SymfonyAction Fluent interface
+     * @param ResponseMock $response
+     * @return  ActionMock Fluent interface
      */
-    public function addResponse(SymfonyResponse $response)
+    public function addResponse(ResponseMock $response)
     {
         $this->responses[] = $response;
 
