@@ -57,20 +57,7 @@ class RamlConverter implements ConverterInterface
     {
         $definition = $this->parser->parse($filepath);
 
-        $namespace = $this->buildNamespace($definition, $namespace);
-
-        $controllers = array();
-
-        if ($definition->getResources()) {
-            foreach ($definition->getResources() as $resource) {
-                $className = ucfirst($resource->getDisplayName()) . 'Controller';
-                $controller = new SymfonyController($className, $namespace, $resource->getDescription());
-                $this->generateActions($controller, $resource);
-                $controllers[] = $controller;
-            }
-        }
-
-        return $controllers;
+        return $this->generateControllers($definition, $namespace);
     }
 
     /**
@@ -81,9 +68,19 @@ class RamlConverter implements ConverterInterface
         $newDefinition = $this->parser->parse($newFilepath);
         $oldDefinition = $this->parser->parse($oldFilepath);
 
-        $namespace = $this->buildNamespace($newDefinition, $namespace);
+        throw new \Exception('Not implemented');
+    }
 
+    /**
+     * Generate controller according to definition
+     *
+     * @return array of SymfonyController
+     */
+    protected function generateControllers(ApiDefinition $definition, $namespace)
+    {
         $controllers = array();
+
+        $namespace = $this->buildNamespace($definition, $namespace);
 
         if ($definition->getResources()) {
             foreach ($definition->getResources() as $resource) {
