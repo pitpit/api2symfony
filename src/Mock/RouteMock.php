@@ -30,11 +30,11 @@ class RouteMock
     public function __construct($path, $name)
     {
         if (!$path || empty($path)) {
-            throw new \Exception("You must provide a route's path");
+            throw new \Exception("You must provide a path for the route");
         }
 
         if (!$name || empty($name)) {
-            throw new \Exception("You must provide a route's name");
+            throw new \Exception("You must provide a name for the route");
         }
 
         $this->path = $path;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Creads\Tests\Api2Symfony;
+namespace Creads\Tests\Api2Symfony\Mock;
 
 use Creads\Api2Symfony\Mock\RouteMock;
 
@@ -16,7 +16,6 @@ class RouteMockTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    You must provide a route's path
      */
     public function testNoPath()
     {
@@ -25,7 +24,6 @@ class RouteMockTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    You must provide a route's name
      */
     public function testNoName()
     {

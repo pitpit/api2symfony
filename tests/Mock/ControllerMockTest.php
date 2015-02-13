@@ -1,6 +1,6 @@
 <?php
 
-namespace Creads\Tests\Api2Symfony;
+namespace Creads\Tests\Api2Symfony\Mock;
 
 use Creads\Api2Symfony\Mock\ControllerMock;
 

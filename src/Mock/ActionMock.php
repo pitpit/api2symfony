@@ -62,11 +62,11 @@ class ActionMock
     public function __construct($name, RouteMock $route, $method, $description = '')
     {
         if (!$name || empty($name)) {
-            throw new \Exception("You must provide a action's name");
+            throw new \Exception("You must provide a name for the action");
         }
 
         if (!$method || empty($method)) {
-            throw new \Exception("You must provide a action's method");
+            throw new \Exception("You must provide a method for the action");
         }
 
         $this->name = $name;

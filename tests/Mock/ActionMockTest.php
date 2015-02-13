@@ -1,6 +1,6 @@
 <?php
 
-namespace Creads\Tests\Api2Symfony;
+namespace Creads\Tests\Api2Symfony\Mock;
 
 use Creads\Api2Symfony\Mock\ActionMock;
 
@@ -59,7 +59,6 @@ class ActionMockTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    You must provide a action's name
      */
     public function testNoName()
     {
@@ -69,7 +68,6 @@ class ActionMockTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    You must provide a action's method
      */
     public function testNoMethod()
     {
