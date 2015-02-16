@@ -121,9 +121,7 @@ class Dumper
         foreach ($lines as $i => $line) {
             $line = rtrim($line);
             if (!empty($line)) {
-                for ($j = 0; $j < $tabs; $j++) {
-                    $output .= '    ';
-                }
+                str_repeat(' ', $tabs * self::INDENT_SPACES);
                 $output .= $line;
             }
             if ($i < ($count - 1)) {
