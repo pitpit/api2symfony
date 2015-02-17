@@ -41,6 +41,35 @@ foreach($controllers as $controller) {
 }
 ```
 
+Process Overview
+----------------
+
+Generate controllers:
+
+```nomnoml
+[<start>st] ->[*.raml]
+[*.raml] RamlConverter->[Mocks]
+[Mocks] SymfonyDumper->[Definitions]
+[Definitions] DefinitionDumper ->[New Controllers]
+[New Controllers] ->[<end>e]
+```
+
+Update controllers:
+
+```nomnoml
+[<start>st] ->[*.raml]
+[*.raml] RamlConverter->[Mocks]
+[Mocks] SymfonyDumper->[New Definitions]
+[New Definitions] ->[Diffs]
+
+[<start>st2] ->[Old Controllers]
+[Old Controllers] SymfonyLoader->[Old Definitions]
+[Old Definitions] -> [Diffs]
+[Diffs] ->[Merged Definitions]
+[Merged Definitions]->[New Controllers]
+[New Controllers] ->[<end>e]
+```
+
 Running tests
 -------------
 

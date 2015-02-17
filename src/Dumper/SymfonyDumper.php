@@ -5,7 +5,7 @@ namespace Creads\Api2Symfony\Dumper;
 use Creads\Api2Symfony\Mock\ControllerMock;
 use Creads\Api2Symfony\Mock\ActionMock;
 use Creads\Api2Symfony\Mock\ResponseMock;
-use Creads\Api2Symfony\Definition\Dumper;
+use Creads\Api2Symfony\Definition\DefinitionDumper;
 use Creads\Api2Symfony\Definition\Definition;
 use Creads\Api2Symfony\Definition\Method;
 use Creads\Api2Symfony\Definition\Property;
@@ -24,7 +24,7 @@ class SymfonyDumper extends AbstractFileDumper
     {
         $definition = $this->getDefinition($controller);
 
-        $dumper = new Dumper($definition);
+        $dumper = new DefinitionDumper($definition);
 
         return $dumper->dump();
     }

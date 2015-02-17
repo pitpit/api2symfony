@@ -12,7 +12,7 @@ namespace Creads\Api2Symfony\Definition;
  * @author Pablo Díez <pablodip@gmail.com>
  * @author Damien Pitard <damien.pitard@gmail.com>
  */
-class Dumper
+class DefinitionDumper
 {
     const INDENT_SPACES = 4;
 
