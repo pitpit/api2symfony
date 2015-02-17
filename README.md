@@ -44,7 +44,7 @@ foreach($controllers as $controller) {
 Process Overview
 ----------------
 
-Generate controllers:
+Generate controllers [(see it)](http://www.nomnoml.com/#view/[<start>st]%20->[*.raml]%0A[*.raml]%20RamlConverter->[Mocks]%0A[Mocks]%20SymfonyDumper->[Definitions]%0A[Definitions]%20DefinitionDumper%20->[New%20Controllers]%0A[New%20Controllers]%20->[<end>e]):
 
 ```nomnoml
 [<start>st] ->[*.raml]
@@ -54,7 +54,7 @@ Generate controllers:
 [New Controllers] ->[<end>e]
 ```
 
-Update controllers:
+Update controllers [(see it)](http://www.nomnoml.com/#view/[<start>st]%20->[*.raml]%0A[*.raml]%20RamlConverter->[Mocks]%0A[Mocks]%20SymfonyDumper->[New%20Definitions]%0A[New%20Definitions]%20->[Diffs]%0A%0A[<start>st2]%20->[Old%20Controllers]%0A[Old%20Controllers]%20SymfonyLoader->[Old%20Definitions]%0A[Old%20Definitions]%20->%20[Diffs]%0A[Diffs]%20->[Merged%20Definitions]%0A[Merged%20Definitions]->[New%20Controllers]%0A[New%20Controllers]%20->[<end>e]):
 
 ```nomnoml
 [<start>st] ->[*.raml]
