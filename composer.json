@@ -37,7 +37,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Creads\\Tests\\": "tests/"
+            "Creads\\Tests\\Api2Symfony\\": "tests/"
         }
     },
     "extra": {
