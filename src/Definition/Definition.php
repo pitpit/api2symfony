@@ -1,6 +1,6 @@
 <?php
 
-namespace Creads\Api2Symfony\ClassDefinition;
+namespace Creads\Api2Symfony\Definition;
 
 /**
  * Represents a definition of a class.

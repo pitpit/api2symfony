@@ -5,10 +5,10 @@ namespace Creads\Api2Symfony\Dumper;
 use Creads\Api2Symfony\Mock\ControllerMock;
 use Creads\Api2Symfony\Mock\ActionMock;
 use Creads\Api2Symfony\Mock\ResponseMock;
-use Creads\Api2Symfony\ClassDefinition\Dumper;
-use Creads\Api2Symfony\ClassDefinition\Definition;
-use Creads\Api2Symfony\ClassDefinition\Method;
-use Creads\Api2Symfony\ClassDefinition\Property;
+use Creads\Api2Symfony\Definition\Dumper;
+use Creads\Api2Symfony\Definition\Definition;
+use Creads\Api2Symfony\Definition\Method;
+use Creads\Api2Symfony\Definition\Property;
 
 /**
  * Dump a symfony controller
@@ -22,8 +22,7 @@ class SymfonyDumper extends AbstractFileDumper
      */
     protected function render(ControllerMock $controller)
     {
-
-        $definition = $this->getClassDefinition($controller);
+        $definition = $this->getDefinition($controller);
 
         $dumper = new Dumper($definition);
 
@@ -37,7 +36,7 @@ class SymfonyDumper extends AbstractFileDumper
      *
      * @return Definition
      */
-    protected function getClassDefinition(ControllerMock $controller)
+    protected function getDefinition(ControllerMock $controller)
     {
         $definition = new Definition($controller->getClassName());
         $definition->setParentClass('Controller');
@@ -49,8 +48,7 @@ class SymfonyDumper extends AbstractFileDumper
             'Symfony\Component\HttpKernel\Exception\HttpException',
             'Symfony\Component\HttpKernel\Exception\BadRequestHttpException',
             'Sensio\Bundle\FrameworkExtraBundle\Configuration\Route',
-            'Sensio\Bundle\FrameworkExtraBundle\Configuration\Method',
-
+            'Sensio\Bundle\FrameworkExtraBundle\Configuration\Method'
         ));
 
 

@@ -24,7 +24,7 @@ class RamlConverter implements ConverterInterface
      *
      * @var Parser
      */
-    private $parser;
+    protected $parser;
 
     /**
      * Options
