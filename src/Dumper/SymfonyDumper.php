@@ -85,17 +85,17 @@ EOT
         $description = $action->getDescription()?$action->getDescription():'<no description>';
         $method->setDocComment(
 <<<EOT
-/**
- * {$description}
- *
- * @Route(
- *   "{$action->getRoute()->getPath()}",
- *   name="{$action->getRoute()->getName()}"
- * )
- * @Method({"{$action->getMethod()}"})
- *
- * @return Response
- */
+    /**
+     * {$description}
+     *
+     * @Route(
+     *   "{$action->getRoute()->getPath()}",
+     *   name="{$action->getRoute()->getName()}"
+     * )
+     * @Method({"{$action->getMethod()}"})
+     *
+     * @return Response
+     */
 EOT
         );
 
@@ -127,7 +127,7 @@ EOT;
         $body = trim(addcslashes($response->getBody(), "'"));
         $description = $response->getDescription()?$response->getDescription():'<no description>';
         if ($response->getCode() >= 200 && $response->getCode() < 300) { //valid response
-            $headers = Dumper::renderArray($response->getHeaders(), 4);
+            $headers = DefinitionDumper::renderArray($response->getHeaders(), 4);
             $code = <<< EOT
 
         if ('{$response->getFormat()}' === \$request->get('_format')) {
@@ -141,7 +141,7 @@ EOT;
 
 EOT;
         } else { //invalid response
-            $headers = Dumper::renderArray($response->getHeaders(), 3);
+            $headers = DefinitionDumper::renderArray($response->getHeaders(), 3);
             $code = <<< EOT
 
         throw new HttpException(

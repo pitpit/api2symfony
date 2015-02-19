@@ -2,9 +2,9 @@
 
 namespace Creads\Tests\Api2Symfony\Fixtures\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
-class LoaderTestController extends Controller
+class Test1LoaderController extends Controller
 {
     /**
      * Get a collection of categories.
@@ -85,5 +85,10 @@ class LoaderTestController extends Controller
         //returns an exception if the api does not know how to handle the request
         throw new BadRequestHttpException("Don't know how to handle this request");
 
+    }
+
+    protected function getProtectedAction()
+    {
+      return '';
     }
 }

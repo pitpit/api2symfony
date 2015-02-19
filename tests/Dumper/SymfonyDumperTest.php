@@ -2,7 +2,6 @@
 
 namespace Creads\Tests\Api2Symfony\Converter;
 
-use Raml\Parser;
 use Creads\Api2Symfony\Dumper\SymfonyDumper;
 use Creads\Api2Symfony\Mock\ControllerMock;
 use Symfony\Component\Filesystem\Filesystem;
@@ -22,8 +21,8 @@ class SymfonyDumperTest extends \PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
-      $fs = new Filesystem();
-      $fs->remove($this->dir);
+        $fs = new Filesystem();
+        $fs->remove($this->dir);
     }
 
     public function testExists()
