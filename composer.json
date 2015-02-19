@@ -22,7 +22,8 @@
     "require": {
         "alecsammon/php-raml-parser": "*@dev",
         "symfony/filesystem": "~2.6",
-        "symfony/http-foundation": "~2.6"
+        "symfony/http-foundation": "~2.6",
+        "docdigital/php-class-editor": "@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "4.*"

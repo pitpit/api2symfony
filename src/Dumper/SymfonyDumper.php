@@ -5,10 +5,19 @@ namespace Creads\Api2Symfony\Dumper;
 use Creads\Api2Symfony\Mock\ControllerMock;
 use Creads\Api2Symfony\Mock\ActionMock;
 use Creads\Api2Symfony\Mock\ResponseMock;
-use Creads\Api2Symfony\Definition\DefinitionDumper;
-use Creads\Api2Symfony\Definition\Definition;
-use Creads\Api2Symfony\Definition\Method;
-use Creads\Api2Symfony\Definition\Property;
+
+
+use DocDigital\Lib\SourceEditor\TokenParser;
+use DocDigital\Lib\SourceEditor\PhpClassEditor;
+use DocDigital\Lib\SourceEditor\ElementBuilder;
+use DocDigital\Lib\SourceEditor\ClassStructure\ClassElement;
+use DocDigital\Lib\SourceEditor\ClassStructure\DocBlock;
+use DocDigital\Lib\SourceEditor\ClassStructure\MethodElement;
+
+// use Creads\Api2Symfony\Definition\DefinitionDumper;
+// use Creads\Api2Symfony\Definition\Definition;
+// use Creads\Api2Symfony\Definition\Method;
+// use Creads\Api2Symfony\Definition\Property;
 
 /**
  * Dump a symfony controller
@@ -17,16 +26,40 @@ use Creads\Api2Symfony\Definition\Property;
  */
 class SymfonyDumper extends AbstractFileDumper
 {
+    const INDENT_SPACES = 4;
+
+    protected $test;
+
     /**
      * {@inheritDoc}
      */
     protected function render(ControllerMock $controller)
     {
-        $definition = $this->getDefinition($controller);
+        $class = $this->getClass($controller);
 
-        $dumper = new DefinitionDumper($definition);
+        $this->test = $class;
 
-        return $dumper->dump();
+        return $class->render(false);
+    }
+
+    public function dump(ControllerMock $controller, $destination = '.')
+    {
+        $filepath = parent::dump($controller, $destination);
+
+        $editor = new PhpClassEditor(new TokenParser());
+        $editor->parseFile($filepath);
+
+        $name = basename(str_replace('\\', '/', $this->test->getName()));
+
+        $class = $editor->getClass($name);
+
+var_dump($class);
+var_dump($this->test);
+
+
+        die();
+
+        return $filepath;
     }
 
     /**
@@ -34,25 +67,25 @@ class SymfonyDumper extends AbstractFileDumper
      *
      * @param ControllerMock $controller
      *
-     * @return Definition
+     * @return ClassElement
      */
-    protected function getDefinition(ControllerMock $controller)
+    protected function getClass(ControllerMock $controller)
     {
-        $definition = new Definition($controller->getClassName());
-        $definition->setParentClass('Controller');
+        $class = new ClassElement();
+
+        $class->setName($controller->getClassName());
+        $class->setClassDef('class ' . $controller->getShortClassName() . ' extends Controller');
+        $class->setNameSpace('namespace ' . $controller->getNamespace() . ';');
+        $class->addUse('use Symfony\Bundle\FrameworkBundle\Controller\Controller;');
+        $class->addUse('use Symfony\Component\HttpFoundation\Request;');
+        $class->addUse('use Symfony\Component\HttpFoundation\Response;');
+        $class->addUse('use Symfony\Component\HttpKernel\Exception\HttpException;');
+        $class->addUse('use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;');
+        $class->addUse('use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;');
+        $class->addUse('use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;');
+
         $description = $controller->getDescription()?$controller->getDescription():'<no description>';
-        $definition->setUses(array(
-            'Symfony\Bundle\FrameworkBundle\Controller\Controller',
-            'Symfony\Component\HttpFoundation\Request',
-            'Symfony\Component\HttpFoundation\Response',
-            'Symfony\Component\HttpKernel\Exception\HttpException',
-            'Symfony\Component\HttpKernel\Exception\BadRequestHttpException',
-            'Sensio\Bundle\FrameworkExtraBundle\Configuration\Route',
-            'Sensio\Bundle\FrameworkExtraBundle\Configuration\Method'
-        ));
-
-
-        $definition->setDocComment(
+        $class->addDocBlock(new DocBlock(
 <<< EOT
 /**
 * {$description}
@@ -61,14 +94,14 @@ class SymfonyDumper extends AbstractFileDumper
 * @see https://github.com/creads/api2symfony
 */
 EOT
-        );
+        ));
 
         foreach ($controller->getActions() as $action) {
-            $method = $this->getMethodDefinition($action);
-            $definition->addMethod($method);
+            $method = $this->getMethod($action, $class);
+            $class->addMethod($method);
         };
 
-        return $definition;
+        return $class;
     }
 
     /**
@@ -76,41 +109,44 @@ EOT
      *
      * @param ActionMock $action
      *
-     * @return Method
+     * @return MethodElement
      */
-    protected function getMethodDefinition(ActionMock $action)
+    protected function getMethod(ActionMock $action, ClassElement $class)
     {
-
-        $method = new Method('public', $action->getName(), 'Request $request', '');
+        $method = new MethodElement($class);
+        $method->setName($action->getName());
         $description = $action->getDescription()?$action->getDescription():'<no description>';
-        $method->setDocComment(
-<<<EOT
-    /**
-     * {$description}
-     *
-     * @Route(
-     *   "{$action->getRoute()->getPath()}",
-     *   name="{$action->getRoute()->getName()}"
-     * )
-     * @Method({"{$action->getMethod()}"})
-     *
-     * @return Response
-     */
+        $method->setSignature(new ElementBuilder('public function ' . $action->getName() . '(Request $request)'));
+        $method->addDocBlock(new DocBlock(
+<<< EOT
+/**
+ * {$description}
+ *
+ * @Route(
+ *   "{$action->getRoute()->getPath()}",
+ *   name="{$action->getRoute()->getName()}"
+ * )
+ * @Method({"{$action->getMethod()}"})
+ *
+ * @return Response
+ */
 EOT
+            )
         );
 
-        $code = '';
-        $method->setAutoIndentation(false);
         foreach ($action->getResponses() as $response) {
-            $code .= $this->getResponseCode($response);
+            $e = $this->getResponse($response);
+            $method->addBodyElement($e);
+
         }
-        $code .=
+
+        $method->addBodyElement(new ElementBuilder(
 <<< EOT
 
         //returns an exception if the api does not know how to handle the request
         throw new BadRequestHttpException("Don't know how to handle this request");
-EOT;
-        $method->setCode($code);
+EOT
+        ));
 
         return $method;
     }
@@ -120,40 +156,161 @@ EOT;
      *
      * @param ResponseMock $response
      *
-     * @return string
+     * @return ElementBuilder
      */
-    protected function getResponseCode(ResponseMock $response)
+    protected function getResponse(ResponseMock $response)
     {
         $body = trim(addcslashes($response->getBody(), "'"));
         $description = $response->getDescription()?$response->getDescription():'<no description>';
+        $headers = var_export($response->getHeaders(), true);
         if ($response->getCode() >= 200 && $response->getCode() < 300) { //valid response
-            $headers = DefinitionDumper::renderArray($response->getHeaders(), 4);
-            $code = <<< EOT
+            $headers = self::renderArray($response->getHeaders(), 4);
+            $body = "'" . $body . "',";
+            $e = new ElementBuilder(
+<<< EOT
 
         if ('{$response->getFormat()}' === \$request->get('_format')) {
 
             return new Response(
-'{$body}',
+{$body}
                 {$response->getCode()},
                 {$headers}
             );
         }
 
-EOT;
+EOT
+            );
         } else { //invalid response
-            $headers = DefinitionDumper::renderArray($response->getHeaders(), 3);
-            $code = <<< EOT
+            $headers = self::renderArray($response->getHeaders(), 3);
+            $body = self::renderComment("'" . $body . "'") . ",";
+            $e = new ElementBuilder(
+<<< EOT
 
-        throw new HttpException(
-            {$response->getCode()},
-'{$body}',
-            null,
-            {$headers}
-        );
+//         throw new HttpException(
+//             {$response->getCode()},
+{$body}
+//             null,
+//             {$headers}
+//         );
 
-EOT;
+EOT
+            );
         }
 
-        return $code;
+        return $e;
+    }
+
+
+    /**
+     * Export an array.
+     *
+     * Based on Symfony\Component\DependencyInjection\Dumper\PhpDumper::exportParameters
+     * http://github.com/symfony/symfony
+     *
+     * @param array $array  The array.
+     *
+     * @return string The array exported.
+     */
+    public static function renderArray(array $array, $tabs = 0)
+    {
+        // return var_export($array, true);
+
+        if (count($array)) {
+
+            $code = array();
+            foreach ($array as $key => $value) {
+                if (is_array($value)) {
+                    $value = self::exportArray($value, $tabs + 1);
+                } else {
+                    $value = null === $value ? 'null' : var_export($value, true);
+                }
+
+                $code[] = sprintf('%s%s => %s,', str_repeat(' ', ($tabs+1) * self::INDENT_SPACES), var_export($key, true), $value);
+            }
+
+            return sprintf("array(\n%s\n%s)", implode("\n", $code), str_repeat(' ', $tabs * self::INDENT_SPACES));
+        } else {
+            return 'array()';
+        }
+    }
+
+    /**
+     * Indents code with tabs (4 spaces)
+     *
+     * @return string
+     */
+    public static function renderIndent($code, $tabs = 0)
+    {
+        $output = '';
+        $lines = preg_split('/\r\n|\r|\n/', $code);
+        $count = count($lines);
+        foreach ($lines as $i => $line) {
+            $line = rtrim($line);
+            if (!empty($line)) {
+                str_repeat(' ', $tabs * self::INDENT_SPACES);
+                $output .= $line;
+            }
+            if ($i < ($count - 1)) {
+                $output .= "\n";
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Comments code with simple line comment (//)
+     *
+     * @return string
+     */
+    public static function renderComment($code)
+    {
+        $output = '';
+        $lines = preg_split('/\r\n|\r|\n/', $code);
+        $count = count($lines);
+        foreach ($lines as $i => $line) {
+            $line = rtrim($line);
+            if (!empty($line)) {
+                $output .= '// ' . $line;
+            }
+            if ($i < ($count - 1)) {
+                $output .= "\n";
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Comments code in a docblock
+     *
+     * @return string
+     */
+    public static function renderDocblockComment($code)
+    {
+        $output = "/**\n";
+        $lines = preg_split('/\r\n|\r|\n/', $code);
+        foreach ($lines as $i => $line) {
+            $output .= ' * ' . $line . "\n";
+        }
+        $output .= " */";
+        return $output;
+    }
+
+    /**
+     * Comments code with multiline comment
+     *
+     * @return string
+     */
+    public static function renderMultiComment($code)
+    {
+        $output = "/*\n";
+        $lines = preg_split('/\r\n|\r|\n/', $code);
+        foreach ($lines as $i => $line) {
+            $output .= $line . "\n";
+        }
+        $output .= "*/";
+
+        return $output;
     }
 }
