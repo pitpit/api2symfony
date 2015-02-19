@@ -89,6 +89,6 @@ class Test1LoaderController extends Controller
 
     protected function getProtectedAction()
     {
-      return '';
+        return '';
     }
 }
