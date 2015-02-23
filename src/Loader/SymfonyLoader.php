@@ -29,7 +29,7 @@ class SymfonyLoader implements LoaderInterface
      *
      * @throws InvalidArgumentException If the class does not exist
      *
-     * @return Definition
+     * @return DocDigital\Lib\SourceEditor\ClassStructure\ClassElement
      */
     public function load($class)
     {

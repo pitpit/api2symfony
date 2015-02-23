@@ -23,7 +23,7 @@ interface LoaderInterface
      *
      * @param mixed $resource
      *
-     * @return Creads\Api2Symfony\Definition\Definition
+     * @return DocDigital\Lib\SourceEditor\ClassStructure\ClassElement
      */
     public function load($resource);
 }

@@ -14,11 +14,6 @@ use DocDigital\Lib\SourceEditor\ClassStructure\ClassElement;
 use DocDigital\Lib\SourceEditor\ClassStructure\DocBlock;
 use DocDigital\Lib\SourceEditor\ClassStructure\MethodElement;
 
-// use Creads\Api2Symfony\Definition\DefinitionDumper;
-// use Creads\Api2Symfony\Definition\Definition;
-// use Creads\Api2Symfony\Definition\Method;
-// use Creads\Api2Symfony\Definition\Property;
-
 /**
  * Dump a symfony controller
  *
@@ -46,20 +41,38 @@ class SymfonyDumper extends AbstractFileDumper
     {
         $filepath = parent::dump($controller, $destination);
 
+        //*** BEGIN TEST ***
         $editor = new PhpClassEditor(new TokenParser());
         $editor->parseFile($filepath);
-
         $name = basename(str_replace('\\', '/', $this->test->getName()));
-
         $class = $editor->getClass($name);
+        $engine = new \Pitpit\Component\Diff\DiffEngine();
+        $diff = $engine->compare($this->test, $class);
 
-var_dump($class);
-var_dump($this->test);
 
+        $this->traceDeep($diff);
 
         die();
 
         return $filepath;
+    }
+
+    protected function traceDeep($diff, $tab = '')
+    {
+        foreach ($diff as $element) {
+            $c = $element->isTypeChanged()?'T':($element->isModified()?'M':($element->isCreated()?'+':($element->isDeleted()?'-':'=')));
+
+            print_r(sprintf("%s* %s [%s->%s] (%s)\n", $tab, $element->getIdentifier(), gettype($element->getOld()), gettype($element->getNew()), $c));
+
+            if ($element->getIdentifier() == 'namespace') {
+                var_dump($element->getOld());
+                var_dump($element->getNew());
+            }
+            if (count($element) && $element->isModified()) {
+                // $this->traceDeep($element, $tab . '  ');
+
+            }
+        }
     }
 
     /**
@@ -73,9 +86,9 @@ var_dump($this->test);
     {
         $class = new ClassElement();
 
-        $class->setName($controller->getClassName());
+        $class->setName($controller->getShortClassName());
         $class->setClassDef('class ' . $controller->getShortClassName() . ' extends Controller');
-        $class->setNameSpace('namespace ' . $controller->getNamespace() . ';');
+        $class->setNameSpace(new ElementBuilder('namespace ' . $controller->getNamespace() . ';'));
         $class->addUse('use Symfony\Bundle\FrameworkBundle\Controller\Controller;');
         $class->addUse('use Symfony\Component\HttpFoundation\Request;');
         $class->addUse('use Symfony\Component\HttpFoundation\Response;');
@@ -131,8 +144,7 @@ EOT
  * @return Response
  */
 EOT
-            )
-        );
+        ));
 
         foreach ($action->getResponses() as $response) {
             $e = $this->getResponse($response);
@@ -165,14 +177,13 @@ EOT
         $headers = var_export($response->getHeaders(), true);
         if ($response->getCode() >= 200 && $response->getCode() < 300) { //valid response
             $headers = self::renderArray($response->getHeaders(), 4);
-            $body = "'" . $body . "',";
             $e = new ElementBuilder(
 <<< EOT
 
         if ('{$response->getFormat()}' === \$request->get('_format')) {
 
             return new Response(
-{$body}
+'{$body}',
                 {$response->getCode()},
                 {$headers}
             );
@@ -182,19 +193,19 @@ EOT
             );
         } else { //invalid response
             $headers = self::renderArray($response->getHeaders(), 3);
-            $body = self::renderComment("'" . $body . "'") . ",";
-            $e = new ElementBuilder(
+
+            $e = new ElementBuilder(self::renderComment(
 <<< EOT
 
-//         throw new HttpException(
-//             {$response->getCode()},
-{$body}
-//             null,
-//             {$headers}
-//         );
+        throw new HttpException(
+            {$response->getCode()},
+'{$body}',
+            null,
+            {$headers}
+        );
 
 EOT
-            );
+            ));
         }
 
         return $e;
@@ -213,8 +224,6 @@ EOT
      */
     public static function renderArray(array $array, $tabs = 0)
     {
-        // return var_export($array, true);
-
         if (count($array)) {
 
             $code = array();
