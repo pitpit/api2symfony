@@ -108,7 +108,7 @@ class SymfonyDumper extends AbstractFileDumper
 
         $class->setName($controller->getShortClassName());
 
-        $class->setClassDef(new ElementBuilder('class ' . $controller->getShortClassName() . ' extends Controller'));
+        $class->setClassDef(new ElementBuilder('class ' . $controller->getShortClassName() . ' extends Controller '));
 
         $namespace = new ElementBuilder('namespace ' . $controller->getNamespace() . ';');
         $class->setNameSpace($namespace);
@@ -187,7 +187,7 @@ EOT
 
         // $method->addElement(new ElementBuilder("\n    "));  //@todo shall we remove this ?
 
-        $signature = new ElementBuilder('public function ' . $action->getName() . '(Request $request)');
+        $signature = new ElementBuilder('public function ' . $action->getName() . '(Request $request) ');
         $method->setSignature($signature);
 
         // $method->addElement($signature);    //@todo shall we remove this ?
@@ -204,13 +204,14 @@ EOT
 
         //returns an exception if the api does not know how to handle the request
         throw new BadRequestHttpException("Don't know how to handle this request");
+
 EOT
         ;
 
 
         $method->addBodyElement(new ElementBuilder($code));
 
-        $method->addElement(new ElementBuilder("}"));
+        // $method->addElement(new ElementBuilder("}"));   //@todo shall we remove this ?
 
         return $method;
     }
