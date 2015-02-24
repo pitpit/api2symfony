@@ -39,57 +39,57 @@ class SymfonyDumper extends AbstractFileDumper
         return $class->render(false);
     }
 
-    public function dump(ControllerMock $controller, $destination = '.')
-    {
-        $filepath = parent::dump($controller, $destination);
+    // public function dump(ControllerMock $controller, $destination = '.')
+    // {
+    //     $filepath = parent::dump($controller, $destination);
 
-        //*** BEGIN TEST ***
-        $editor = new PhpClassEditor(new TokenParser());
-        $editor->parseFile($filepath);
-        $name = basename(str_replace('\\', '/', $this->test->getName()));
-        $class = $editor->getClass($name);
+    //     //*** BEGIN TEST ***
+    //     $editor = new PhpClassEditor(new TokenParser());
+    //     $editor->parseFile($filepath);
+    //     $name = basename(str_replace('\\', '/', $this->test->getName()));
+    //     $class = $editor->getClass($name);
 
-        $engine = new DiffEngine(
-            null,
-            array(
-                'DocDigital\Lib\SourceEditor\ClassStructure\MethodElement' => array('parentClass', 'elements'),
-                'DocDigital\Lib\SourceEditor\ClassStructure\ClassElement' => array('elements')
-            ),
-            array(
-                'DocDigital\Lib\SourceEditor\ElementBuilder' => function($diff) {
-                    $new = $diff->getNew();
-                    $old = $diff->getOld();
+    //     $engine = new DiffEngine(
+    //         null,
+    //         array(
+    //             'DocDigital\Lib\SourceEditor\ClassStructure\MethodElement' => array('parentClass', 'elements'),
+    //             'DocDigital\Lib\SourceEditor\ClassStructure\ClassElement' => array('elements')
+    //         ),
+    //         array(
+    //             'DocDigital\Lib\SourceEditor\ElementBuilder' => function($diff) {
+    //                 $new = $diff->getNew();
+    //                 $old = $diff->getOld();
 
-                    if ($new->__toString() !== $old->__toString()) {
-                        $diff->setStatus(Diff::STATUS_MODIFIED);
-                    }
-                }
-            )
-        );
+    //                 if ($new->__toString() !== $old->__toString()) {
+    //                     $diff->setStatus(Diff::STATUS_MODIFIED);
+    //                 }
+    //             }
+    //         )
+    //     );
 
-        $diff = $engine->compare($this->test, $class);
+    //     $diff = $engine->compare($this->test, $class);
 
-        $trace = function($diff, $tab = '') use (&$trace) {
-            foreach ($diff as $element) {
-                $c = $element->isTypeChanged()?'T':($element->isModified()?'M':($element->isCreated()?'+':($element->isDeleted()?'-':'=')));
+    //     $trace = function($diff, $tab = '') use (&$trace) {
+    //         foreach ($diff as $element) {
+    //             $c = $element->isTypeChanged()?'T':($element->isModified()?'M':($element->isCreated()?'+':($element->isDeleted()?'-':'=')));
 
-                // print_r(sprintf("%s* %s [%s -> %s] (%s)\n", $tab, $element->getIdentifier(), is_object($element->getOld())?get_class($element->getOld()):gettype($element->getOld()), is_object($element->getNew())?get_class($element->getNew()):gettype($element->getNew()), $c));
-                print_r(sprintf("%s* %s [%s -> %s] (%s)\n", $tab, $element->getIdentifier(), gettype($element->getOld()), gettype($element->getNew()), $c));
+    //             // print_r(sprintf("%s* %s [%s -> %s] (%s)\n", $tab, $element->getIdentifier(), is_object($element->getOld())?get_class($element->getOld()):gettype($element->getOld()), is_object($element->getNew())?get_class($element->getNew()):gettype($element->getNew()), $c));
+    //             print_r(sprintf("%s* %s [%s -> %s] (%s)\n", $tab, $element->getIdentifier(), gettype($element->getOld()), gettype($element->getNew()), $c));
 
-                if ($element->isModified()) {
-                    $trace($element, $tab . '  ');
-                }
-                if ($element->isModified() && is_object($element->getNew()) && get_class($element->getNew()) === 'DocDigital\Lib\SourceEditor\ElementBuilder') {
-                    var_dump($element->getOld());
-                    var_dump($element->getNew());die();
-                }
-            }
-        };
+    //             if ($element->isModified()) {
+    //                 $trace($element, $tab . '  ');
+    //             }
+    //             if ($element->isModified() && is_object($element->getNew()) && get_class($element->getNew()) === 'DocDigital\Lib\SourceEditor\ElementBuilder') {
+    //                 var_dump($element->getOld());
+    //                 var_dump($element->getNew());die();
+    //             }
+    //         }
+    //     };
 
-        $trace($diff);
+    //     $trace($diff);
 
-        return $filepath;
-    }
+    //     return $filepath;
+    // }
 
     /**
      * Get class definition corresponding to ControllerMock

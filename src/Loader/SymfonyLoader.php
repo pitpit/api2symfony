@@ -7,6 +7,8 @@ use Creads\Api2Symfony\Definition\Definition;
 use Creads\Api2Symfony\Definition\Method;
 use Creads\Api2Symfony\Definition\Property;
 
+use DocDigital\Lib\SourceEditor\TokenParser;
+use DocDigital\Lib\SourceEditor\PhpClassEditor;
 /**
  * Load definition from an existent controllers
  *
@@ -19,49 +21,27 @@ class SymfonyLoader implements LoaderInterface
      *
      * @return boolean
      */
-    public function exists($class)
+    public function exists($filepath)
     {
-        return (class_exists($class));
+        return (file_exists($filepath));
     }
 
     /**
-     * @param string $class Fully qualified controller class name
+     * @param string $filepath Filepath to class
      *
      * @throws InvalidArgumentException If the class does not exist
      *
      * @return DocDigital\Lib\SourceEditor\ClassStructure\ClassElement
      */
-    public function load($class)
+    public function load($filepath)
     {
-        if (!$this->exists($class)) {
+        if (!$this->exists($filepath)) {
 
-            throw new \InvalidArgumentException(sprintf('Class %s does not exist', $class));
+            throw new \InvalidArgumentException(sprintf('File %s does not exist', $filepath));
         }
 
-        $reflectionClass = new \ReflectionClass($class);
+        //....
 
-        $definition = new Definition($class);
-        $definition->setParentClass($reflectionClass->getParentClass());
-
-        foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-            if ($reflectionMethod->isPublic()) {
-                //@todo filters method that does not match pattern
-
-                $parameters = [];
-                foreach ($reflectionMethod->getParameters() as $parameter) {
-                    $class = $parameter->getClass();
-
-                    //@todo add the parameter class to uses
-
-                    $parameters[] = $class->getShortName() . ' $' .$parameter->getName();
-                }
-                $parameters = implode(',', $parameters);
-
-                $method = new Method('public', $reflectionMethod->getName(), $parameters, '');
-                $definition->addMethod($method);
-            }
-        }
-
-        return $definition;
+        return ;
     }
 }
