@@ -13,7 +13,7 @@ use Creads\Api2Symfony\Mock\RouteMock;
 use Creads\Api2Symfony\Mock\ResponseMock;
 
 /**
- * Provide a way to convert a RAML specification to a list of ControllerMock
+ * Convert a RAML specification to a list of ControllerMock
  *
  * @author Quentin <q.pautrat@creads.org>
  */

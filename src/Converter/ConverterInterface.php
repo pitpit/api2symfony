@@ -3,17 +3,19 @@
 namespace Creads\Api2Symfony\Converter;
 
 /**
+ * Convert a speck to Mock model (see Mock/*)
+ *
  * @author Quentin <q.pautrat@creads.org>
  */
 interface ConverterInterface
 {
     /**
-     * Generate controller from a given file
+     * Generate mocked controllers in a $namespace from a given file
      *
-     * @param  string  $filepath  Specification filepath
-     * @param  string  $namespace Base namespace for controllers
+     * @param string $filepath  Specification filepath
+     * @param string $namespace Base namespace for controllers
      *
-     * @return array                A list of ControllerMock
+     * @return ControllerMock[]
      */
     public function generate($filepath, $namespace);
 }
