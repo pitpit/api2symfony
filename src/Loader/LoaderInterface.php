@@ -10,20 +10,11 @@ namespace Creads\Api2Symfony\Loader;
 interface LoaderInterface
 {
     /**
-     * Does the resource exist
-     *
-     * @param mixed $resource
-     *
-     * @return boolean
-     */
-    public function exists($resource);
-
-    /**
      * Load specification from existing controllers
      *
      * @param mixed $resource
      *
-     * @return DocDigital\Lib\SourceEditor\ClassStructure\ClassElement
+     * @return
      */
     public function load($resource);
 }

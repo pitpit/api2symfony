@@ -2,36 +2,28 @@
 
 namespace Creads\Tests\Api2Symfony\Loader;
 
-use Creads\Api2Symfony\Loader\SymfonyLoader;
+use Creads\Api2Symfony\Loader\SymfonyControllerLoader;
 use Creads\Tests\Api2Symfony\Fixtures\Controller\Test1LoaderController;
 
-class SymfonyControllerLoaderTest extends \PHPUnit_Framework_TestCase
+class SymfonyControllerLoaderLoaderTest extends \PHPUnit_Framework_TestCase
 {
-    public function testExists()
-    {
-        $loader = new SymfonyLoader();
-
-        $this->assertTrue($loader->exists(__DIR__ . '/../Fixtures/Controller/Test1LoaderController.php'));
-        $this->assertFalse($loader->exists(__DIR__ . '/../unknown.php'));
-    }
-
     /**
      * @expectedException InvalidArgumentException
      */
     public function testLoadException()
     {
-        $loader = new SymfonyLoader();
+        $loader = new SymfonyControllerLoader();
 
-        $definition = $loader->load('This\Class\Does\Not\Exists');
+        $definition = $loader->load('This/Path/Does/Not/Exists');
     }
 
     public function testLoad()
     {
-        $loader = new SymfonyLoader();
+        $loader = new SymfonyControllerLoader();
 
-        $classElement = $loader->load(__DIR__ . '/../Fixtures/Controller/Test1LoaderController.php');
+        $file = $loader->load(__DIR__ . '/../Fixtures/Controller');
 
-        $this->assertInstanceOf('DocDigital\Lib\SourceEditor\ClassStructure\ClassElement', $classElement);
+        $this->assertInstanceOf('Gnugat\Medio\Model\File', $file);
 
 
         // $this->assertEquals('Creads\Tests\Api2Symfony\Fixtures\Controller\Controller', $definition->getParentClass()->getName());

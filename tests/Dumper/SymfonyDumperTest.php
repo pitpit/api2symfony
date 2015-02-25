@@ -6,13 +6,37 @@ use Creads\Api2Symfony\Dumper\SymfonyDumper;
 use Creads\Api2Symfony\Mock\ControllerMock;
 use Symfony\Component\Filesystem\Filesystem;
 
+
+use Gnugat\Medio\PrettyPrinter;
+use Gnugat\Medio\TwigExtension\Line\Line;
+use Gnugat\Medio\TwigExtension\Line\ContractLineStrategy;
+use Gnugat\Medio\TwigExtension\Line\FileLineStrategy;
+use Gnugat\Medio\TwigExtension\Line\ObjectLineStrategy;
+use Gnugat\Medio\TwigExtension\Phpdoc;
+use Gnugat\Medio\TwigExtension\Type;
+use Gnugat\Medio\TwigExtension\Whitespace;
+
 class SymfonyDumperTest extends \PHPUnit_Framework_TestCase
 {
     protected $dumper;
 
     protected function setUp()
     {
-        $this->dumper = new SymfonyDumper();
+        $line = new Line();
+        $line->add(new ContractLineStrategy());
+        $line->add(new FileLineStrategy());
+        $line->add(new ObjectLineStrategy());
+
+        $loader = new \Twig_Loader_Filesystem(__DIR__.'/../../vendor/gnugat/medio/templates');
+        $twig = new \Twig_Environment($loader);
+        $twig->addExtension(new Phpdoc());
+        $twig->addExtension(new Type());
+        $twig->addExtension(new Whitespace($line));
+
+
+
+        $prettyPrinter = new PrettyPrinter($twig);
+        $this->dumper = new SymfonyDumper($prettyPrinter);
 
         $this->dir = sys_get_temp_dir() . '/api2symfony.test';
         $fs = new Filesystem();
