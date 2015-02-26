@@ -8,14 +8,9 @@ use Creads\Api2Symfony\Mock\ResponseMock;
 
 use Gnugat\Medio\Model\File;
 use Gnugat\Medio\Model\Object;
+use Gnugat\Medio\Model\Import;
+use Gnugat\Medio\Model\Method;
 use Gnugat\Medio\PrettyPrinter;
-
-// use DocDigital\Lib\SourceEditor\TokenParser;
-// use DocDigital\Lib\SourceEditor\PhpClassEditor;
-// use DocDigital\Lib\SourceEditor\ElementBuilder;
-// use DocDigital\Lib\SourceEditor\ClassStructure\ClassElement;
-// use DocDigital\Lib\SourceEditor\ClassStructure\DocBlock;
-// use DocDigital\Lib\SourceEditor\ClassStructure\MethodElement;
 
 // use Pitpit\Component\Diff\DiffEngine;
 // use Pitpit\Component\Diff\Diff;
@@ -43,13 +38,38 @@ class SymfonyDumper extends AbstractFileDumper
     /**
      * {@inheritDoc}
      */
-    protected function render(ControllerMock $controller)
+    protected function render(ControllerMock $controller, $destination = '.')
     {
-        $class = $this->getClass($controller);
+        $class =  $this->getClass($controller, $destination);
 
-        $file = new File($controller->getShortClassName().'.php', $class);
+        $output = $this->prettyPrinter->generateCode($class);
 
-        return $this->prettyPrinter->generateCode($file);
+        return $output;
+    }
+
+    /**
+     * Get file definition 
+     *
+     * @param ControllerMock $controller
+     *
+     * @return Object
+     */
+    protected function getClass(ControllerMock $controller, $destination = '.')
+    {
+        $object = $this->getObject($controller);
+
+        $filename = $destination . '/' . str_replace('\\', '/', $controller->getClassName()).'.php';
+        $class = new File($filename, $object);
+
+        $class->addImport(new Import('Symfony\Bundle\FrameworkBundle\Controller\Controller'));
+        $class->addImport(new Import('Symfony\Component\HttpFoundation\Request'));
+        $class->addImport(new Import('Symfony\Component\HttpFoundation\Response'));
+        $class->addImport(new Import('Symfony\Component\HttpKernel\Exception\HttpException'));
+        $class->addImport(new Import('Symfony\Component\HttpKernel\Exception\BadRequestHttpException'));
+        $class->addImport(new Import('Sensio\Bundle\FrameworkExtraBundle\Configuration\Route'));
+        $class->addImport(new Import('Sensio\Bundle\FrameworkExtraBundle\Configuration\Method'));
+
+        return $class;
     }
 
     /**
@@ -59,66 +79,40 @@ class SymfonyDumper extends AbstractFileDumper
      *
      * @return Object
      */
-    protected function getClass(ControllerMock $controller)
+    public function getObject(ControllerMock $controller)
     {
-        return new Object($controller->getClassName());
+        $object = new Object($controller->getClassName());
+
+        foreach ($controller->getActions() as $action) {
+            $method = $this->getMethod($action, $class);
+            $object->addMethod($method);
+        };
+
+        return $object;
     }
 
+    /**
+     * Get method definition corresponding to action mock
+     *
+     * @param ActionMock $action
+     *
+     * @return MethodElement
+     */
+    public function getMethod(ActionMock $action, ClassElement $class)
+    {
+        $method = new Method($action->getName());
+        $method->addArgument(new Argument('Request', 'request'));
+        $method->setBody(
+<<< EOT
 
-    // const INDENT_SPACES = 4;
+        //returns an exception if the api does not know how to handle the request
+        throw new BadRequestHttpException("Don't know how to handle this request");
 
-    // protected $test;
-    // public function dump(ControllerMock $controller, $destination = '.')
-    // {
-    //     $filepath = parent::dump($controller, $destination);
+EOT
+        );
 
-    //     //*** BEGIN TEST ***
-    //     $editor = new PhpClassEditor(new TokenParser());
-    //     $editor->parseFile($filepath);
-    //     $name = basename(str_replace('\\', '/', $this->test->getName()));
-    //     $class = $editor->getClass($name);
-
-    //     $engine = new DiffEngine(
-    //         null,
-    //         array(
-    //             'DocDigital\Lib\SourceEditor\ClassStructure\MethodElement' => array('parentClass', 'elements'),
-    //             'DocDigital\Lib\SourceEditor\ClassStructure\ClassElement' => array('elements')
-    //         ),
-    //         array(
-    //             'DocDigital\Lib\SourceEditor\ElementBuilder' => function($diff) {
-    //                 $new = $diff->getNew();
-    //                 $old = $diff->getOld();
-
-    //                 if ($new->__toString() !== $old->__toString()) {
-    //                     $diff->setStatus(Diff::STATUS_MODIFIED);
-    //                 }
-    //             }
-    //         )
-    //     );
-
-    //     $diff = $engine->compare($this->test, $class);
-
-    //     $trace = function($diff, $tab = '') use (&$trace) {
-    //         foreach ($diff as $element) {
-    //             $c = $element->isTypeChanged()?'T':($element->isModified()?'M':($element->isCreated()?'+':($element->isDeleted()?'-':'=')));
-
-    //             // print_r(sprintf("%s* %s [%s -> %s] (%s)\n", $tab, $element->getIdentifier(), is_object($element->getOld())?get_class($element->getOld()):gettype($element->getOld()), is_object($element->getNew())?get_class($element->getNew()):gettype($element->getNew()), $c));
-    //             print_r(sprintf("%s* %s [%s -> %s] (%s)\n", $tab, $element->getIdentifier(), gettype($element->getOld()), gettype($element->getNew()), $c));
-
-    //             if ($element->isModified()) {
-    //                 $trace($element, $tab . '  ');
-    //             }
-    //             if ($element->isModified() && is_object($element->getNew()) && get_class($element->getNew()) === 'DocDigital\Lib\SourceEditor\ElementBuilder') {
-    //                 var_dump($element->getOld());
-    //                 var_dump($element->getNew());die();
-    //             }
-    //         }
-    //     };
-
-    //     $trace($diff);
-
-    //     return $filepath;
-    // }
+        return $method;
+    }
 
 //     /**
 //      * Get class definition corresponding to ControllerMock

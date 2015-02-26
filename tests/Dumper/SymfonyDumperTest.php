@@ -33,8 +33,6 @@ class SymfonyDumperTest extends \PHPUnit_Framework_TestCase
         $twig->addExtension(new Type());
         $twig->addExtension(new Whitespace($line));
 
-
-
         $prettyPrinter = new PrettyPrinter($twig);
         $this->dumper = new SymfonyDumper($prettyPrinter);
 

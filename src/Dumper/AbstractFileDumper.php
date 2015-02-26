@@ -7,8 +7,6 @@ use Creads\Api2Symfony\Mock\ControllerMock;
 use Twig_Environment;
 
 /**
- * Dump a controller
- *
  * @author Damien Pitard <d.pitard@creads.org>
  */
 abstract class AbstractFileDumper implements DumperInterface
@@ -53,14 +51,14 @@ abstract class AbstractFileDumper implements DumperInterface
      *
      * @retirn string
      */
-    abstract protected function render(ControllerMock $controller);
+    abstract protected function render(ControllerMock $controller, $destination = '.');
 
     /**
      * {@inheritDoc}
      */
     public function dump(ControllerMock $controller, $destination = '.')
     {
-        $output = $this->render($controller);
+        $output = $this->render($controller, $destination);
 
         if (!$this->filesystem->exists($destination)) {
             throw new \InvalidArgumentException(sprintf('Folder %s does not exist', $destination));
