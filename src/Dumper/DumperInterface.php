@@ -4,6 +4,11 @@ namespace Creads\Api2Symfony\Dumper;
 
 use Creads\Api2Symfony\Mock\ControllerMock;
 
+/**
+ * Dump a Mock suite to files implementing the API into framework (controllers...)
+ *
+ * @author Damien Pitard <damien.pitard@gmail.com>
+ */
 interface DumperInterface
 {
     /**
@@ -20,9 +25,9 @@ interface DumperInterface
      * Dump $controller as a file into $destinaton directory
      *
      * @param  ControllerMock $controller
-     * @param  string            $destination
+     * @param  string         $destination
      *
-     * @return array where key is a filename and value the output
+     * @return array Where key is a filename and value the output
      */
     public function dump(ControllerMock $controller, $destination = '.');
 }

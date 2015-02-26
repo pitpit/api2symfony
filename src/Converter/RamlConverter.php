@@ -62,7 +62,7 @@ class RamlConverter implements ConverterInterface
     /**
      * Generate controller according to definition
      *
-     * @return array of ControllerMock
+     * @return ControllerMock[]
      */
     protected function generateControllers(ApiDefinition $definition, $namespace)
     {
@@ -163,6 +163,7 @@ EOT;
      *
      * @param  ApiDefinition $definition Checks if definition has version
      * @param  string        $namespace  Base
+     *
      * @return string
      */
     protected function buildNamespace(ApiDefinition $definition, $namespace)

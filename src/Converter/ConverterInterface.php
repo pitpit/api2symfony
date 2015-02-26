@@ -3,7 +3,7 @@
 namespace Creads\Api2Symfony\Converter;
 
 /**
- * Convert a speck to Mock model (see Mock/*)
+ * Convert an API specification into Mock suite (see Mock/*)
  *
  * @author Quentin <q.pautrat@creads.org>
  */
